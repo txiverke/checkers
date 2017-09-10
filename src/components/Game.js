@@ -1,10 +1,11 @@
 const Game = {
-  init(size, elemArr, start) {
+  init(size, elemArr) {
     this.width = size 
     this.height = size
     this.elem = null
     this.elemArr = elemArr || null
-    this.start = start || false    
+    this.coords = {}
+    this.pieces = []
   },
   insert(output) {
     if (this.elemArr) {
@@ -26,7 +27,7 @@ const Game = {
     if(this.elem) {
       this.elem.style.width = this.width + 'px'
       this.elem.style.height = this.height + 'px'
-      
+
       output.appendChild(this.elem)
     }
 

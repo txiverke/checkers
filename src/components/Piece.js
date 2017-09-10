@@ -55,6 +55,28 @@ Piece.setup = function(size) {
 
 Piece.build = function(output) {
   this.insert(output)
+
+  const boardCoords = Array.from(document.querySelectorAll('.cell'))
+  boardCoords.forEach(item => {
+    this.coords = Object.assign({}, this.coords, {
+      [item.id]: { x: item.offsetLeft ,y: item.offsetTop }
+    })
+  })
+  
+  this.initialPosition()
+  
+}
+
+Piece.initialPosition = function() {
+  const pieces = Array.from(document.querySelectorAll('.piece'))
+
+  pieces.forEach(piece => {
+    let id = piece.dataset.id
+
+    piece.style.top = this.coords[id].y + 'px'   
+    piece.style.left = this.coords[id].x + 'px'
+  })
+
 }
 
 export default Piece
