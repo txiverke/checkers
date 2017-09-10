@@ -48,3 +48,7 @@ br {
   box-sizing: border-box;
 }
 
+.piece.red {
+  background: red;
+}
+

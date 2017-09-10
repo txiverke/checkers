@@ -56,21 +56,26 @@ Piece.setup = function(size) {
 Piece.build = function(output) {
   this.insert(output)
 
+  this.elemArr.red.forEach(piece => piece.html.addEventListener('click', this.click.bind(this)))
+  
+  this.initialPosition()
+  
+}
+
+Piece.click = function(e) {
+  console.log(e.target)
+}
+
+Piece.initialPosition = function() {
   const boardCoords = Array.from(document.querySelectorAll('.cell'))
   boardCoords.forEach(item => {
     this.coords = Object.assign({}, this.coords, {
       [item.id]: { x: item.offsetLeft ,y: item.offsetTop }
     })
   })
-  
-  this.initialPosition()
-  
-}
 
-Piece.initialPosition = function() {
-  const pieces = Array.from(document.querySelectorAll('.piece'))
-
-  pieces.forEach(piece => {
+  this.pieces = Array.from(document.querySelectorAll('.piece'))
+  this.pieces.forEach(piece => {
     let id = piece.dataset.id
 
     piece.style.top = this.coords[id].y + 'px'   

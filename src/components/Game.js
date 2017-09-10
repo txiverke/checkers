@@ -15,7 +15,7 @@ const Game = {
         let color = elemObj[key] === 'black' ? 'black' : 'red'
 
         for (var i = 0; i < this.elemArr[elemObj[key]].length; i++) {
-          this.elemArr[elemObj[key]][i].html.style.background = color
+          this.elemArr[elemObj[key]][i].html.classList.add(color)
           this.elemArr[elemObj[key]][i].html.style.width = this.width + 'px'
           this.elemArr[elemObj[key]][i].html.style.height = this.height + 'px'
 
