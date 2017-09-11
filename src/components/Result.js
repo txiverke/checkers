@@ -8,10 +8,26 @@ Result.setup = function (size) {
   this.init(size)
 
   this.elem = createElement('div', { 'classes': ['result'] })
-  this.title = createElement
+  this.resultBlack = createElement('div', { 'classes': ['box', 'black'] })
+  this.resultBlack.appendChild(createElement('div'))
+  
+  this.resultRed = createElement('div', { 'classes': ['box', 'red'] })
+  this.resultRed.appendChild(createElement('div'))
+
+  this.elem.appendChild(this.resultBlack)
+  this.elem.appendChild(this.resultRed)
 }
+
 Result.build = function (output) {
   this.insert(output)
+  this.setDefault()
+}
+
+Result.setDefault = function() {
+  if (!this.start) {
+    this.resultBlack.querySelector('div').textContent = 0
+    this.resultRed.querySelector('div').textContent = 0
+  }
 }
 
 export default Result

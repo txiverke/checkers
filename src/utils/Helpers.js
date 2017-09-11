@@ -8,7 +8,7 @@ export const createElement = (tag = 'div', attr = {}, label = '') => {
   const elem = document.createElement(tag)
   
   if (attr.classes && attr.classes.length > 0) {
-    attr.classes.map(item => elem.setAttribute('class', item))
+    attr.classes.map(item => elem.classList.add(item))
   }
 
   if (attr.data && Object.keys(attr.data).length > 0) {

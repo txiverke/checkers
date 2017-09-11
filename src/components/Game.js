@@ -11,6 +11,7 @@ const Game = {
     this.elem = null
     this.coords = {}
     this.pieces = []
+    this.start = false
   },
   /**
    * Adds the html nodes to the DOM
