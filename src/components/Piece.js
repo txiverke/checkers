@@ -6,10 +6,10 @@ import { boardCoords } from '../utils/Constants'
 const Piece = Object.create(Game)
 
 Piece.setup = function(size) {
-  this.init(size, this.elemArr)
-  this.elemArr = { black: [], red: [] }
+  this.init(size)
+  this.elem = { black: [], red: [] }
 
-  const teams = Object.keys(this.elemArr)
+  const teams = Object.keys(this.elem)
 
   for(var key in teams) {
     let count = 0
@@ -44,9 +44,11 @@ Piece.setup = function(size) {
         index++
       }
 
-      this.elemArr[currentKey].push({
-        id,
-        html: createElement('div', ['piece'], {'data-id': id})
+      this.elem[currentKey].push({
+        html: createElement('div', { 
+          classes: ['piece'], 
+          data: { 'data-id': id } 
+        })
       })
 
     }
@@ -56,7 +58,7 @@ Piece.setup = function(size) {
 Piece.build = function(output) {
   this.insert(output)
 
-  this.elemArr.red.forEach(piece => piece.html.addEventListener('click', this.click.bind(this)))
+  this.elem.red.forEach(piece => piece.html.addEventListener('click', this.click.bind(this)))
   
   this.initialPosition()
   

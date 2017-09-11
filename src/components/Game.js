@@ -1,37 +1,44 @@
+import { getType } from '../utils/Helpers'
+
 const Game = {
-  init(size, elemArr) {
-    this.width = size 
-    this.height = size
+  /**
+   * Initializes the Object properties
+   * @param {object} size 
+   */
+  init(size) {
+    this.width = size.w || 0 
+    this.height = size.h || 0
     this.elem = null
-    this.elemArr = elemArr || null
     this.coords = {}
     this.pieces = []
   },
+  /**
+   * Adds the html nodes to the DOM
+   * @param {string} output 
+   */
   insert(output) {
-    if (this.elemArr) {
-      const elemObj = Object.keys(this.elemArr)
+    switch (getType(this.elem)) {
+      case 'HTMLDivElement':
+        this.elem.style.width = this.width + 'px'
+        this.elem.style.height = this.height + 'px'
 
-      for (var key in elemObj) {
-        let color = elemObj[key] === 'black' ? 'black' : 'red'
-
-        for (var i = 0; i < this.elemArr[elemObj[key]].length; i++) {
-          this.elemArr[elemObj[key]][i].html.classList.add(color)
-          this.elemArr[elemObj[key]][i].html.style.width = this.width + 'px'
-          this.elemArr[elemObj[key]][i].html.style.height = this.height + 'px'
-
-          output.appendChild(this.elemArr[elemObj[key]][i].html)
-        }
-      }
+        output.appendChild(this.elem)
+        break
+      
+      case 'Object':
+        const keys = Object.keys(this.elem)
+        
+        keys.forEach(key => {
+          this.elem[key].forEach(item => {
+            item.html.classList.add(key)
+            item.html.style.width = `${this.width}px`
+            item.html.style.height = `${this.height}px`
+            
+            output.appendChild(item.html)
+          })
+        })
+        break
     }
-
-    if(this.elem) {
-      this.elem.style.width = this.width + 'px'
-      this.elem.style.height = this.height + 'px'
-
-      output.appendChild(this.elem)
-    }
-
-
   }
 }
 

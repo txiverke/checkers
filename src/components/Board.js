@@ -5,7 +5,7 @@ const Board = Object.create(Game)
 
 Board.setup = function(size, coords) {
   this.init(size)
-  this.elem = createElement('div', ['board'])
+  this.elem = createElement('div', { 'classes': ['board'] })
   this.board = []
 
   for (var i = 0; i < coords.x.length; i++) {
