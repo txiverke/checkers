@@ -17,7 +17,7 @@ export const createElement = (tag = 'div', attr = {}, label = '') => {
     }
   }
 
-  if (label.string > 0) elem.textContent = label
+  if (label.length > 0) elem.textContent = label
 
   return elem
 }

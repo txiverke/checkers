@@ -52,11 +52,14 @@ br {
   background: red;
 }
 
+.piece.active {
+  box-shadow: 0 0 0.5rem green;
+}
+
 .result {
   display: flex;
   flex-direction: column;
   background: #dddddd;
-  margin-left: 1rem;
 }
 
 .box {

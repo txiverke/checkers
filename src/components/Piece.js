@@ -58,6 +58,7 @@ Piece.setup = function(size) {
 Piece.build = function(output) {
   this.insert(output)
 
+  this.active = false
   this.elem.red.forEach(piece => piece.html.addEventListener('click', this.click.bind(this)))
   
   this.initialPosition()
@@ -65,7 +66,25 @@ Piece.build = function(output) {
 }
 
 Piece.click = function(e) {
-  console.log(e.target)
+  const currentPos = (e.target.dataset.id).split('')
+  const num = []
+
+  if (currentPos[1] === '1') {
+    num.push(2)
+  } else if (currentPos[1] === '8') {
+    num.push(7)
+  } else {
+    num.push(Number(currentPos[1]) - 1, Number(currentPos[1]) + 1)
+  }
+
+  const char = boardCoords.x[boardCoords.x.findIndex(item => item === currentPos[0]) + 1]
+  const nextMove = num.map(item => char + item)
+
+
+  if (!e.target.classList.contains('active')) {
+    this.elem.red.forEach(item => item.html.classList.remove('active'))
+    e.target.classList.add('active')
+  }
 }
 
 Piece.initialPosition = function() {
