@@ -1,5 +1,5 @@
 /**
- * CREATES HTML TAGS
+ * Creates a new html element
  * @param {string} tag 
  * @param {object} attr 
  * @param {string} label 
@@ -22,6 +22,10 @@ export const createElement = (tag = 'div', attr = {}, label = '') => {
   return elem
 }
 
+/**
+ * Returns the element type
+ * @param {object} input 
+ */
 export const getType = (input) => {
   const output = (Array.prototype.toString.call(input)).split(' ')
   

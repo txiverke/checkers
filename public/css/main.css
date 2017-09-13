@@ -52,7 +52,9 @@ br {
   background: red;
 }
 
-.piece.active {
+.piece.red:hover,
+.piece.red.active {
+  cursor: pointer;
   box-shadow: 0 0 0.5rem green;
 }
 
@@ -78,7 +80,7 @@ br {
   margin: 11px 10px 0 13px;
   color: white;
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: lighter;
   text-align: center;
   line-height: 1.65;
 }

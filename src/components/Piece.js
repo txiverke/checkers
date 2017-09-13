@@ -1,5 +1,4 @@
 import Game from './Game'
-
 import { createElement } from '../utils/Helpers'
 import { boardCoords } from '../utils/Constants'
 
@@ -11,76 +10,69 @@ Piece.setup = function(size) {
 
   const teams = Object.keys(this.elem)
 
-  for(var key in teams) {
+  teams.forEach(team => {
     let count = 0
     let index = 1
     let down = 2
 
     for (var i = 1; i <= 12; i++) {
-      let currentKey = teams[key]
       let id = 0
       let square = 0      
 
-      if (currentKey === 'black') {
+      if (team === 'black') {
         square = (count%2 === 0) ? (index + (index - 1)) : index * 2
         id = boardCoords.x[(boardCoords.x.length - 1) - count] + square
-
-        if (i%4 === 0) {
-           count++
-           index = 0
-        }
-
-        index++
       } else {
         square = (count%2 === 0) ? index * 2 : (index + (index - 1))
-        id = boardCoords.x[down] + square
-
-        if (i%4 === 0) {
-          count++
-          index = 0
-          down--
-        }
-        
-        index++
+        id = boardCoords.x[down] + square        
       }
 
-      this.elem[currentKey].push({
+      this.elem[team].push({
         html: createElement('div', { 
           classes: ['piece'], 
-          data: { 'data-id': id } 
+          data: { 'data-index': id } 
         })
       })
 
+      if (i%4 === 0) {
+        count++
+        index = 0
+        if (team !== 'black') down--
+      }
+      
+      index++      
     }
-  }
+  })
 }
 
 Piece.build = function(output) {
   this.insert(output)
-
   this.active = false
   this.elem.red.forEach(piece => piece.html.addEventListener('click', this.click.bind(this)))
-  
   this.initialPosition()
-  
 }
 
 Piece.click = function(e) {
-  const currentPos = (e.target.dataset.id).split('')
+  const currentPos = (e.target.dataset.index).split('')
   const num = []
+  const x = boardCoords.x
 
-  if (currentPos[1] === '1') {
-    num.push(2)
-  } else if (currentPos[1] === '8') {
-    num.push(7)
-  } else {
-    num.push(Number(currentPos[1]) - 1, Number(currentPos[1]) + 1)
+  switch (currentPos[1]) {
+    case '1':
+      num.push(2)
+      break
+    case '8':
+      num.push(8)
+      break
+    default:
+      num.push(Number(currentPos[1]) - 1, Number(currentPos[1]) + 1) 
   }
 
-  const char = boardCoords.x[boardCoords.x.findIndex(item => item === currentPos[0]) + 1]
-  const nextMove = num.map(item => char + item)
+  this.nextMove = num.map(item => x[x.findIndex(item => item === currentPos[0]) + 1] + item)
+  this.renderNextMove(e)
+}
 
-
+Piece.renderNextMove = function (e) {
   if (!e.target.classList.contains('active')) {
     this.elem.red.forEach(item => item.html.classList.remove('active'))
     e.target.classList.add('active')
@@ -88,19 +80,23 @@ Piece.click = function(e) {
 }
 
 Piece.initialPosition = function() {
-  const boardCoords = Array.from(document.querySelectorAll('.cell'))
-  boardCoords.forEach(item => {
+  const boardCells = Array.from(document.querySelectorAll('.cell'))
+
+  boardCells.forEach(cell => {
     this.coords = Object.assign({}, this.coords, {
-      [item.id]: { x: item.offsetLeft ,y: item.offsetTop }
+      [cell.id]: { 
+        x: cell.offsetLeft, 
+        y: cell.offsetTop 
+      }
     })
   })
 
   this.pieces = Array.from(document.querySelectorAll('.piece'))
   this.pieces.forEach(piece => {
-    let id = piece.dataset.id
+    let index = piece.dataset.index
 
-    piece.style.top = this.coords[id].y + 'px'   
-    piece.style.left = this.coords[id].x + 'px'
+    piece.style.top = this.coords[index].y + 'px'   
+    piece.style.left = this.coords[index].x + 'px'
   })
 
 }
