@@ -1,0 +1,30 @@
+.result {
+  display: flex;
+  flex-direction: column;
+  background: #dddddd;
+}
+
+.result-box {
+  flex: 1;
+}
+
+.result-box:first-child {
+  border-bottom: 1px solid #cccccc;
+}
+
+.result-box > div {
+  width: 52.5px;
+  height: 52.5px;
+  border-radius: 50px;
+  background: black;
+  margin: 11px 10px 0 13px;
+  color: white;
+  font-size: 2rem;
+  font-weight: lighter;
+  text-align: center;
+  line-height: 1.65;
+}
+
+.result-box:last-child > div {
+  background: red;
+}

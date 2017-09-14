@@ -8,10 +8,10 @@ Result.setup = function (size) {
   this.init(size)
 
   this.elem = createElement('div', { 'classes': ['result'] })
-  this.resultBlack = createElement('div', { 'classes': ['box', 'black'] })
+  this.resultBlack = createElement('div', { 'classes': ['result-box', 'black'] })
   this.resultBlack.appendChild(createElement('div'))
   
-  this.resultRed = createElement('div', { 'classes': ['box', 'red'] })
+  this.resultRed = createElement('div', { 'classes': ['result-box', 'red'] })
   this.resultRed.appendChild(createElement('div'))
 
   this.elem.appendChild(this.resultBlack)

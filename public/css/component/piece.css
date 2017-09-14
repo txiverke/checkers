@@ -1,0 +1,27 @@
+.piece {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-radius: 50px;
+  background: black;
+  margin: 5px;
+  box-sizing: border-box;
+  transition: left 0.5s, top 0.5s;
+}
+
+.piece.red {
+  background: red;
+  cursor: pointer;  
+}
+
+.piece.red.active {
+  box-shadow: 0 0 0.5rem green;
+}
+
+.piece-next {
+  width: 52.5px;
+  height: 52.5px;
+  background: transparent;
+  box-shadow: 0 0 0.5rem green;  
+  cursor: pointer;  
+}

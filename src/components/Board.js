@@ -16,7 +16,7 @@ Board.setup = function(size, coords) {
 
   this.board.map((item, index) => {
     let breakline = (index%8 === 0 && index !== 0) ? '<br />' : ''
-    this.elem.innerHTML += `${breakline}<div id=${item} class="cell"></div>`
+    this.elem.innerHTML += `${breakline}<div id=${item} class="board-cell"></div>`
   }).join('')
 }
 

@@ -39,7 +39,7 @@ Piece.setup = function(size) {
         index = 0
         if (team !== 'black') down--
       }
-      
+
       index++      
     }
   })
@@ -47,8 +47,9 @@ Piece.setup = function(size) {
 
 Piece.build = function(output) {
   this.insert(output)
-  this.active = false
+
   this.elem.red.forEach(piece => piece.html.addEventListener('click', this.click.bind(this)))
+  
   this.initialPosition()
 }
 
@@ -62,7 +63,7 @@ Piece.click = function(e) {
       num.push(2)
       break
     case '8':
-      num.push(8)
+      num.push(7)
       break
     default:
       num.push(Number(currentPos[1]) - 1, Number(currentPos[1]) + 1) 
@@ -72,15 +73,8 @@ Piece.click = function(e) {
   this.renderNextMove(e)
 }
 
-Piece.renderNextMove = function (e) {
-  if (!e.target.classList.contains('active')) {
-    this.elem.red.forEach(item => item.html.classList.remove('active'))
-    e.target.classList.add('active')
-  }
-}
-
 Piece.initialPosition = function() {
-  const boardCells = Array.from(document.querySelectorAll('.cell'))
+  const boardCells = Array.from(document.querySelectorAll('.board-cell'))
 
   boardCells.forEach(cell => {
     this.coords = Object.assign({}, this.coords, {
@@ -99,6 +93,48 @@ Piece.initialPosition = function() {
     piece.style.left = this.coords[index].x + 'px'
   })
 
+}
+
+Piece.renderNextMove = function (e) {
+  const moveFrom = e.target.dataset.index
+  const html = document.querySelector('.board')
+
+  this.nextMove.forEach((item) => {
+    let next = createElement('div', { 
+      'classes': ['piece', 'piece-next'], 
+      'data': {
+        'data-from': moveFrom, 
+        'data-to': item 
+      } 
+    })
+    next.style.left = this.coords[item].x + 'px'
+    next.style.top = this.coords[item].y + 'px'
+    next.addEventListener('click', this.move.bind(this))
+
+    html.appendChild(next)
+  })
+  
+  this.oldNext = document.querySelectorAll('.piece-next')  
+
+  if (!e.target.classList.contains('active')) {
+    this.elem.red.forEach(item => item.html.classList.remove('active'))
+    e.target.classList.add('active')
+  }
+}
+
+Piece.move = function(e) {
+  const _this = e.target.dataset
+
+  this.oldNext.forEach(item => {
+    item.classList.remove('next')
+    item.removeEventListener('click', this.move.bind(this))
+  })
+
+  const elem = document.querySelector(`[data-index="${_this.from}"]`)
+  elem.style.left = this.coords[_this.to].x +'px'
+  elem.style.top = this.coords[_this.to].y +'px'
+  elem.dataset.index = _this.to
+  elem.classList.remove('active')
 }
 
 export default Piece
