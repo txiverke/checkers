@@ -13,7 +13,7 @@ export const createElement = (tag = 'div', attr = {}, label = '') => {
 
   if (attr.data && Object.keys(attr.data).length > 0) {
     for (var key in attr.data) {
-      elem.setAttribute(key, attr.data[key])
+      elem.setAttribute(['data-' + key], attr.data[key])
     }
   }
 

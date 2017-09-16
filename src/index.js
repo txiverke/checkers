@@ -1,5 +1,5 @@
 import Board from './components/Board'
-import Piece from './components/Piece'
+import Player from './components/Player'
 import Result from './components/Result'
 
 import { boardCoords } from './utils/Constants'
@@ -12,9 +12,9 @@ window.addEventListener('DOMContentLoaded', () => {
   newBoard.build(html) 
 
   const boardHtml = document.querySelector('.board')
-  const newPieces = Object.create(Piece)
-  newPieces.setup({ w: 52.5, h: 52.5 })
-  newPieces.build(boardHtml)
+  const newPlayer = Object.create(Player)
+  newPlayer.setup({ w: 52.5, h: 52.5 })
+  newPlayer.build(boardHtml)
 
   const newResult = Object.create(Result)
   newResult.setup({ w: 80, h: 150 })

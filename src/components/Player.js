@@ -1,10 +1,11 @@
 import Game from './Game'
+
 import { createElement } from '../utils/Helpers'
 import { boardCoords } from '../utils/Constants'
 
-const Piece = Object.create(Game)
+const Player = Object.create(Game)
 
-Piece.setup = function(size) {
+Player.setup = function(size) {
   this.init(size)
   this.elem = { black: [], red: [] }
 
@@ -30,7 +31,7 @@ Piece.setup = function(size) {
       this.elem[team].push({
         html: createElement('div', { 
           classes: ['piece'], 
-          data: { 'data-index': id } 
+          data: { 'index': id } 
         })
       })
 
@@ -45,66 +46,72 @@ Piece.setup = function(size) {
   })
 }
 
-Piece.build = function(output) {
+Player.build = function(output) {
   this.insert(output)
-
   this.elem.red.forEach(piece => piece.html.addEventListener('click', this.click.bind(this)))
-  
   this.initialPosition()
 }
 
-Piece.click = function(e) {
-  const currentPos = (e.target.dataset.index).split('')
-  const num = []
-  const x = boardCoords.x
+Player.click = function(e) {
+  if (this.turn) {
+    const currentPos = (e.target.dataset.index).split('')
+    const num = []
+    const x = boardCoords.x
+  
+    switch (currentPos[1]) {
+      case '1': num.push(2); break;
+      case '8': num.push(7); break;
+      default: num.push(Number(currentPos[1]) - 1, Number(currentPos[1]) + 1); 
+    }
 
-  switch (currentPos[1]) {
-    case '1':
-      num.push(2)
-      break
-    case '8':
-      num.push(7)
-      break
-    default:
-      num.push(Number(currentPos[1]) - 1, Number(currentPos[1]) + 1) 
+    this.nextMove = []
+
+    num.forEach((item) => {
+      let temp = x[x.findIndex(item => item === currentPos[0]) + 1] + item
+      if (!this.coords[temp].active) {
+        this.nextMove.push(temp)
+      }
+    })
+
+    if (this.nextMove.length > 0) this.showNextOptions(e)
   }
-
-  this.nextMove = num.map(item => x[x.findIndex(item => item === currentPos[0]) + 1] + item)
-  this.renderNextMove(e)
+  
 }
 
-Piece.initialPosition = function() {
+
+Player.initialPosition = function() {
   const boardCells = Array.from(document.querySelectorAll('.board-cell'))
+  console.log('**SET PIECES IN THE INITIAL POSITION**')
 
   boardCells.forEach(cell => {
     this.coords = Object.assign({}, this.coords, {
-      [cell.id]: { 
-        x: cell.offsetLeft, 
-        y: cell.offsetTop 
-      }
+      [cell.id]: { x: cell.offsetLeft, y: cell.offsetTop }
     })
   })
 
   this.pieces = Array.from(document.querySelectorAll('.piece'))
   this.pieces.forEach(piece => {
     let index = piece.dataset.index
-
     piece.style.top = this.coords[index].y + 'px'   
     piece.style.left = this.coords[index].x + 'px'
+    this.coords[index].active = true
+    this.coords[index].user = piece.classList.contains('red') ? true : false 
   })
-
 }
 
-Piece.renderNextMove = function (e) {
+Player.showNextOptions = function (e) {
   const moveFrom = e.target.dataset.index
   const html = document.querySelector('.board')
+  const oldNextMoves = document.querySelectorAll('.piece-next')
+
+  if (oldNextMoves.length > 0) this.hideNextOptions(oldNextMoves)
 
   this.nextMove.forEach((item) => {
     let next = createElement('div', { 
       'classes': ['piece', 'piece-next'], 
       'data': {
-        'data-from': moveFrom, 
-        'data-to': item 
+        'from': moveFrom, 
+        'to': item 
       } 
     })
     next.style.left = this.coords[item].x + 'px'
@@ -122,19 +129,25 @@ Piece.renderNextMove = function (e) {
   }
 }
 
-Piece.move = function(e) {
-  const _this = e.target.dataset
-
-  this.oldNext.forEach(item => {
-    item.classList.remove('next')
-    item.removeEventListener('click', this.move.bind(this))
-  })
-
-  const elem = document.querySelector(`[data-index="${_this.from}"]`)
-  elem.style.left = this.coords[_this.to].x +'px'
-  elem.style.top = this.coords[_this.to].y +'px'
-  elem.dataset.index = _this.to
-  elem.classList.remove('active')
+Player.hideNextOptions = function(arr) {
+  const parent = document.querySelector('.board')
+  arr.forEach(item => parent.removeChild(item))
 }
 
-export default Piece
+Player.move = function(e) {
+  const target = e.target.dataset
+  const elem = document.querySelector(`[data-index="${target.from}"]`)
+  elem.style.left = this.coords[target.to].x +'px'
+  elem.style.top = this.coords[target.to].y +'px'
+  elem.dataset.index = target.to
+  elem.classList.remove('active')
+
+  this.coords[target.from].active = false
+  this.coords[target.from].user = false
+  this.coords[target.to].active = true
+  this.coords[target.to].user = true
+
+  this.hideNextOptions(document.querySelectorAll('.piece-next'))
+}
+
+export default Player

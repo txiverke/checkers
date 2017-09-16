@@ -24,10 +24,9 @@ Result.build = function (output) {
 }
 
 Result.setDefault = function() {
-  if (!this.start) {
-    this.resultBlack.querySelector('div').textContent = 0
-    this.resultRed.querySelector('div').textContent = 0
-  }
+  this.result = { user: 0, computer: 0 }
+  this.resultBlack.querySelector('div').textContent = this.result.computer
+  this.resultRed.querySelector('div').textContent = this.result.user
 }
 
 export default Result
