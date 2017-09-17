@@ -1,5 +1,6 @@
 import Board from './components/Board'
-import Player from './components/Player'
+import User from './components/User'
+import Machine from './components/Machine'
 import Result from './components/Result'
 
 import { boardCoords } from './utils/Constants'
@@ -12,9 +13,13 @@ window.addEventListener('DOMContentLoaded', () => {
   newBoard.build(html) 
 
   const boardHtml = document.querySelector('.board')
-  const newPlayer = Object.create(Player)
-  newPlayer.setup({ w: 52.5, h: 52.5 })
-  newPlayer.build(boardHtml)
+  const newUser = Object.create(User)
+  newUser.setup({ w: 52.5, h: 52.5 })
+  newUser.build(boardHtml)
+
+  const newMachine = Object.create(Machine)
+  newMachine.setup({ w: 52.5, h: 52.5 })
+  newMachine.build(boardHtml)
 
   const newResult = Object.create(Result)
   newResult.setup({ w: 80, h: 150 })

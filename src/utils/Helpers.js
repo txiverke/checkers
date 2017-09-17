@@ -27,7 +27,9 @@ export const createElement = (tag = 'div', attr = {}, label = '') => {
  * @param {object} input 
  */
 export const getType = (input) => {
-  const output = (Array.prototype.toString.call(input)).split(' ')
-  
+  const output = Array.isArray(input)
+    ? ["[object", "Array]"]
+    : (Array.prototype.toString.call(input)).split(' ')
+
   return output[1].slice(0, output[1].length - 1)
 }

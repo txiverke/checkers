@@ -13,7 +13,7 @@ const Game = {
     this.pieces = []
     this.nextMove = []
     this.result = {}
-    this.turn = true
+    this.history = []
   },
   /**
    * Adds the html nodes to the DOM
