@@ -7,7 +7,7 @@ const Machine = Object.create(Game)
 
 /**
  * SETUP
- * Creates the the Game pieces
+ * Creates the the Machine pieces
  * 
  * @param {Object}
  */
@@ -44,8 +44,7 @@ Machine.setup = function (size) {
 
 /**
  * BUILD
- * Adds the Game pieces in the board 
- * Binds the pieces with a click Event
+ * Adds the Machine pieces in the board 
  * 
  * @param {Object - DOM Element}
  */
@@ -55,7 +54,7 @@ Machine.build = function (output) {
 }
 
 /**
- * SETDEFAULT
+ * SET_DEFAULT
  * Set the pieces in the right position in the board
  * Fill this.coords Array with the info of the game
  */
@@ -76,6 +75,10 @@ Machine.setDefault = function () {
     this.coords[index].active = true
     this.coords[index].user = false
   })
+}
+
+Machine.start = function() {
+  console.log(this)
 }
 
 export default Machine

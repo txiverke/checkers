@@ -1,4 +1,5 @@
 import Game from './Game'
+import Machine from './Machine'
 
 import { createElement } from '../utils/Helpers'
 import { boardCoords } from '../utils/Constants'
@@ -7,7 +8,7 @@ const User = Object.create(Game)
 
 /**
  * SETUP
- * Creates the the Game pieces
+ * Creates the the User pieces
  * 
  * @param {Object}
  */
@@ -42,7 +43,7 @@ User.setup = function (size) {
 
 /**
  * BUILD
- * Adds the Game pieces in the board 
+ * Adds the User pieces in the board 
  * Binds the pieces with a click Event
  * 
  * @param {Object - DOM Element}
@@ -54,7 +55,7 @@ User.build = function (output) {
 }
 
 /**
- * SETDEFAULT
+ * SET_DEFAULT
  * Set the pieces in the right position in the board
  * Fill this.coords Array with the info of the game
  */
@@ -155,6 +156,8 @@ User.move = function (e) {
 
   this.hideNextOptions(document.querySelectorAll('.piece-next'))
   this.history.push({ user: true, from: target.from, to: target.to })
+  
+  Machine.start()
 }
 
 export default User
