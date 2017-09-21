@@ -9,6 +9,5 @@ describe('Game', () => {
 
     expect(newGame.width).toBe(500)
     expect(newGame.height).toBe(300)
-    expect(newGame.elem).toBe(null)
   })
 })

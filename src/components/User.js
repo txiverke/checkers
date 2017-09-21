@@ -1,66 +1,18 @@
-import Game from './Game'
-import Machine from './Machine'
+import Player from './Player'
 
-import { createElement } from '../utils/Helpers'
-import { boardCoords } from '../utils/Constants'
+const User = Object.create(Player)
 
-const User = Object.create(Game)
-
-/**
- * SETUP
- * Creates the the User pieces
- * 
- * @param {Object}
- */
-User.setup = function (size) {
-  this.init(size)
-  this.elem = {user: []}
-
-  let count = 0
-  let index = 1
-  let down = 2
-
-  for (var i = 1; i <= 12; i++) {
-    const square = (count%2 === 0) ? index * 2 : (index + (index - 1))
-    const id = boardCoords.x[down] + square        
-    
-    this.elem.user.push({
-      html: createElement('div', { 
-        classes: ['piece', 'user'], 
-        data: { 'index': id } 
-      })
-    })
-
-    if (i%4 === 0) {
-      count++
-      index = 0
-      down--
-    }
-
-    index++      
-  }
+User.create = function(size, name, output) {
+  Player.setup(size, name)
+  Player.build(output)
 }
 
 /**
- * BUILD
- * Adds the User pieces in the board 
- * Binds the pieces with a click Event
- * 
- * @param {Object - DOM Element}
- */
-User.build = function (output) {
-  this.insert(output)
-  this.elem.user.forEach(piece => piece.html.addEventListener('click', this.click.bind(this)))
-  this.setDefault()
-}
-
-/**
- * SET_DEFAULT
- * Set the pieces in the right position in the board
- * Fill this.coords Array with the info of the game
- */
 User.setDefault = function () {
   const boardCells = Array.from(document.querySelectorAll('.board-cell'))
+
+  this.board = Board.get.bind(Board)()
+  console.log('user', this.board)
 
   boardCells.forEach(cell => {
     this.coords = Object.assign({}, this.coords, {
@@ -78,14 +30,7 @@ User.setDefault = function () {
   })
 }
 
-/**
- * CLICK
- * Get the piece that was clicked
- * Fill an Array with the posible moves
- * Chech if the next moves are available
- * 
- * @param {Object - event}
- */
+
 User.click = function (e) {
   if (this.history.length%2 === 0 ) {
     const currentPos = (e.target.dataset.index).split('')
@@ -157,7 +102,9 @@ User.move = function (e) {
   this.hideNextOptions(document.querySelectorAll('.piece-next'))
   this.history.push({ user: true, from: target.from, to: target.to })
   
-  Machine.start()
+  console.log(this.coords)
+  Machine.start.call(Machine)
 }
+*/
 
 export default User

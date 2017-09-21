@@ -13,13 +13,11 @@ window.addEventListener('DOMContentLoaded', () => {
   newBoard.build(html) 
 
   const boardHtml = document.querySelector('.board')
-  const newUser = Object.create(User)
-  newUser.setup({ w: 52.5, h: 52.5 })
-  newUser.build(boardHtml)
+  const user1 = Object.create(User)
+  user1.create({ w: 52.5, h: 52.5 }, 'user', boardHtml)
 
-  const newMachine = Object.create(Machine)
-  newMachine.setup({ w: 52.5, h: 52.5 })
-  newMachine.build(boardHtml)
+  //const user2 = Object.create(Machine)
+  //user2.create({ w: 52.5, h: 52.5 }, 'machine', boardHtml)
 
   const newResult = Object.create(Result)
   newResult.setup({ w: 80, h: 150 })
