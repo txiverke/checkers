@@ -12,7 +12,7 @@ const Player = Object.create(Game)
  */
 Player.setup = function (size, name) {
   this.init(size)
-  this.elem[name] = []
+  this.elem = { [name]: [] }
 
   let count = 0
   let index = 1
@@ -56,13 +56,13 @@ Player.setup = function (size, name) {
  */
 Player.build = function (output) {
   this.insert(output)
+
   const keys = Object.keys(this.elem)
 
-  for (var k in keys) {
-    console.log(keys[k])
-    for (var i = 0; i < keys[k].length; i++) {
-      keys[k][i].html
-    }
+  for (var i = 0; i < this.elem[keys[0]].length; i++) {
+    let temp = this.elem[keys[0]][i].html.dataset.index
+    document.querySelector(`[data-index="${temp}"]`).style.left = document.getElementById(temp).offsetLeft + 'px'
+    //document.querySelector(`[data-index="${temp}"]`).sytle.top = document.getElementById(temp).offsetTop + 'px'
   }
 }
 
