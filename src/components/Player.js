@@ -60,9 +60,12 @@ Player.build = function (output) {
   const keys = Object.keys(this.elem)
 
   for (var i = 0; i < this.elem[keys[0]].length; i++) {
-    let temp = this.elem[keys[0]][i].html.dataset.index
-    document.querySelector(`[data-index="${temp}"]`).style.left = document.getElementById(temp).offsetLeft + 'px'
-    //document.querySelector(`[data-index="${temp}"]`).sytle.top = document.getElementById(temp).offsetTop + 'px'
+    let item = this.elem[keys[0]][i].html
+    let index = item.dataset.index
+    let target = document.getElementById(index)
+
+    item.style.left = target.offsetLeft + 'px'
+    item.style.top = target.offsetTop + 'px'
   }
 }
 

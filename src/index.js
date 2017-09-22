@@ -16,8 +16,8 @@ window.addEventListener('DOMContentLoaded', () => {
   const user1 = Object.create(User)
   user1.create({ w: 52.5, h: 52.5 }, 'user', boardHtml)
 
-  //const user2 = Object.create(Machine)
-  //user2.create({ w: 52.5, h: 52.5 }, 'machine', boardHtml)
+  const user2 = Object.create(Machine)
+  user2.create({ w: 52.5, h: 52.5 }, 'machine', boardHtml)
 
   const newResult = Object.create(Result)
   newResult.setup({ w: 80, h: 150 })

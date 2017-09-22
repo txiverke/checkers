@@ -25,9 +25,4 @@ Board.build = function(output) {
   this.insert(output)
 }
 
-Board.get = function () {
-  console.log('its called')
-  return this.board
-}
-
 export default Board

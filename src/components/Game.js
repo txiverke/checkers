@@ -9,9 +9,6 @@ const Game = {
     this.width = size.w || 0 
     this.height = size.h || 0
     this.elem = {}
-    this.coords = {}
-    this.pieces = []
-    this.nextMove = []
     this.result = {}
     this.history = []
   },
