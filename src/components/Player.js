@@ -33,7 +33,7 @@ Player.setup = function (size, name) {
     this.elem[name].push({
       html: createElement('div', { 
         classes: ['piece', name], 
-        data: { 'index': id } 
+        data: { 'index': id, 'role': name } 
       })
     })
 
@@ -67,6 +67,22 @@ Player.build = function (output) {
     item.style.left = target.offsetLeft + 'px'
     item.style.top = target.offsetTop + 'px'
   }
+}
+
+Player.getCoords = function () {
+  this.coords = { user: {}, machine: {}}
+
+  const pieces = document.querySelectorAll('.piece')
+  pieces.forEach((piece) => {
+    const type = piece.dataset.role
+    this.coords[type] = Object.assign({}, this.coords[type], {
+      [piece.dataset.index]: {
+        x: piece.offsetLeft,
+        y: piece.offsetTop,
+        user: type === 'user' ? true : false
+      }
+    })
+  })
 }
 
 export default Player

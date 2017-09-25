@@ -7,4 +7,8 @@ Machine.create = function(size, name, output) {
   Player.build(output)
 }
 
+Machine.move = function () {
+  console.log('history', this.history)
+}
+
 export default Machine

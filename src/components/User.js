@@ -1,4 +1,6 @@
 import Player from './Player'
+import Machine from './Machine'
+
 import { boardCoords } from '../utils/Constants'
 import { createElement } from '../utils/Helpers'
 
@@ -25,6 +27,8 @@ User.create = function(size, name, output) {
 
 User.click = function (e) {
   if (this.history.length%2 === 0 ) {
+    this.getCoords()
+    console.log(this.coords)
     this.item = e.target
     this.nextMove = []
 
@@ -87,14 +91,24 @@ User.move = function (e) {
   this.item.style.top = this.cells[target.to].y +'px'
   this.item.dataset.index = target.to
 
-  this.coords[target.from].active = false
-  this.coords[target.from].user = false
-  this.coords = Object.assign({}, this.coords, {
-    [target.to]: { 'user': true }
+  delete this.coords.user[target.from]
+
+  this.coords.user = Object.assign({}, this.coords.user, {
+    [target.to]: {
+      x: this.cells[target.to].x,
+      y: this.cells[target.to].y,
+      user: true }
   })
 
   this.hideNextOptions(document.querySelectorAll('.piece-next'))
-  //this.history.push({ user: true, from: target.from, to: target.to })
+  
+  this.history.push({ 
+    user: true, 
+    from: target.from, 
+    to: target.to 
+  })
+
+  Machine.move.call(this)
 }
 
 User.hideNextOptions = function (arr) {
