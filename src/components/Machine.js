@@ -7,8 +7,18 @@ Machine.create = function(size, name, output) {
   Player.build(output)
 }
 
-Machine.move = function () {
-  console.log('history', this.history)
+Machine.set = function () {
+  this.getCoords()
+  if (this.history.length === 1) {
+   
+  }
+  Machine.firstMove()
+}
+
+Machine.firstMove = function () {
+  const values = [1, 3, 5, 7]
+  const random = Math.floor(Math.random() * 4)
+  console.log(random)
 }
 
 export default Machine
