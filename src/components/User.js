@@ -9,26 +9,12 @@ const User = Object.create(Player)
 User.create = function(size, name, output) {
   this.setup(size, name)
   this.build(output)
-  this.coords = {}
-  this.elem.user.forEach((item) => {
-    let index = item.html.dataset.index
-
-    this.coords = Object.assign({}, this.coords, {
-      [item.html.dataset.index]: {
-        x: document.getElementById(index).offsetLeft,
-        y: document.getElementById(index).offsetTop,
-        user: true,
-      }
-    })
-
-    item.html.addEventListener('click', this.click.bind(this))    
-  })
+  this.elem.user.forEach(item => item.html.addEventListener('click', this.click.bind(this)))
 }
 
 User.click = function (e) {
   if (this.history.length%2 === 0 ) {
     this.getCoords()
-    console.log(this.coords)
     this.item = e.target
     this.nextMove = []
 
@@ -45,8 +31,10 @@ User.click = function (e) {
     num.forEach((item) => {
       let temp = x[x.findIndex(item => item === currentPos[0]) + 1] + item
 
-      if (!this.coords[temp] || !this.coords[temp].user) {
+      if (!this.coords.user[temp] && !this.coords.machine[temp]) {
         this.nextMove.push(temp)
+      } else if (this.coords.machine[temp].type === 'machine') {
+        console.log('time to kill')
       }
     })
 
@@ -97,16 +85,16 @@ User.move = function (e) {
     [target.to]: {
       x: this.cells[target.to].x,
       y: this.cells[target.to].y,
-      user: true }
+      type: 'user' }
   })
 
   this.hideNextOptions(document.querySelectorAll('.piece-next'))
   
-  this.history.push({ 
-    user: true, 
+  /*this.history.push({ 
+    type: 'user', 
     from: target.from, 
     to: target.to 
-  })
+  })*/
 
   Machine.move.call(this)
 }

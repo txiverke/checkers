@@ -79,7 +79,7 @@ Player.getCoords = function () {
       [piece.dataset.index]: {
         x: piece.offsetLeft,
         y: piece.offsetTop,
-        user: type === 'user' ? true : false
+        type: type === 'user' ? 'user' : 'machine'
       }
     })
   })
