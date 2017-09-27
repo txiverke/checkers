@@ -10,9 +10,8 @@ Machine.create = function(size, name, output) {
 Machine.set = function () {
   this.getCoords()
   if (this.history.length === 1) {
-   
+    Machine.firstMove()
   }
-  Machine.firstMove()
 }
 
 Machine.firstMove = function () {
