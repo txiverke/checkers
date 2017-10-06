@@ -10,18 +10,24 @@ Machine.create = function(size, name, output) {
   Player.build(output)
 }
 
+/** 
+ * This method is called from User 
+ * so the keyword "this" is a reference of User  
+ */
 Machine.set = function () {
-  if (this.history.length === 1) {
-   
-  }
   Machine.history = this.history
-  Machine.firstMove()
+
+  if (this.history.length === 1) {
+    Machine.firstMove()
+  }
+  
 }
 
 Machine.firstMove = function () {
   const values = [1, 3, 5, 7]
   const r = getRandom(0, 4)
   const random = values[r]
+
   this.item = document.querySelector(`[data-index=F${random}]`)
   this.move()
 }

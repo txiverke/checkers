@@ -9,6 +9,8 @@ const Game = {
     this.width = size.w || 0 
     this.height = size.h || 0
     this.elem = {}
+    this.result = {}
+    this.history = []
   },
   /**
    * Adds the html nodes to the DOM

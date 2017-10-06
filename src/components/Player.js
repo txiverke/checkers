@@ -13,7 +13,6 @@ const Player = Object.create(Game)
 Player.setup = function (size, name) {
   this.init(size)
   this.elem = { [name]: [] }
-  this.history = []
 
   let count = 0
   let index = 1
