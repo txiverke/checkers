@@ -13,6 +13,7 @@ const Player = Object.create(Game)
 Player.setup = function (size, name) {
   this.init(size)
   this.elem = { [name]: [] }
+  this.history = []
 
   let count = 0
   let index = 1
@@ -81,6 +82,16 @@ Player.getCoords = function () {
         y: piece.offsetTop,
         type: type === 'user' ? 'user' : 'machine'
       }
+    })
+  })
+}
+
+Player.getCells = function () {
+  const cells = document.querySelectorAll('.board-cell')
+  
+  cells.forEach(cell => {
+    this.cells = Object.assign({}, this.cells, {
+      [cell.id]: { x: cell.offsetLeft, y: cell.offsetTop }
     })
   })
 }

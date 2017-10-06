@@ -33,3 +33,5 @@ export const getType = (input) => {
 
   return output[1].slice(0, output[1].length - 1)
 }
+
+export const getRandom = (min, max) => Math.floor((Math.random() * max) + min)

@@ -25,7 +25,8 @@ User.create = function(size, name, output) {
 }
 
 User.click = function (e) {
-  if (this.history.length%2 === 0 ) {
+  if (this.history.length%2 === 0) {
+    this.getCells()
     this.getCoords()
     this.item = e.target
     this.nextMove = []
@@ -43,11 +44,9 @@ User.click = function (e) {
     num.forEach((item) => {
       let temp = x[x.findIndex(item => item === currentPos[0]) + 1] + item
 
-      if (!this.coords.user[temp] && !this.coords.machine[temp]) {
+      if (!this.coords.user[temp]) {
         this.nextMove.push(temp)
-      } else if (this.coords.machine[temp].type === 'machine') {
-        console.log('time to kill')
-      }
+      } 
     })
 
     if (this.nextMove.length > 0) {
@@ -60,17 +59,10 @@ User.click = function (e) {
 User.showNextOptions = function () {
   const moveFrom = this.item.dataset.index
   const html = document.querySelector('.board')
-  const cells = document.querySelectorAll('.board-cell')
   const oldNextMoves = document.querySelectorAll('.piece-next')
   
   if (oldNextMoves.length > 0) this.hideNextOptions(oldNextMoves)
 
-  cells.forEach(cell => {
-    this.cells = Object.assign({}, this.cells, {
-      [cell.id]: { x: cell.offsetLeft, y: cell.offsetTop }
-    })
-  })
-  
   this.nextMove.forEach((item) => {
     let next = createElement('div', { 
       'classes': ['piece', 'piece-next'], 
@@ -97,13 +89,16 @@ User.move = function (e) {
     [target.to]: {
       x: this.cells[target.to].x,
       y: this.cells[target.to].y,
-      user: true }
+      type: 'user' }
   })
 
   this.hideNextOptions(document.querySelectorAll('.piece-next'))
-  //this.history.push({ user: true, from: target.from, to: target.to })
+  this.history.push({ user: true, from: target.from, to: target.to })
 
-  Machine.set.call(this)
+  setTimeout(() => {
+    Machine.set.call(this)
+  }, 500)
+  
 }
 
 User.hideNextOptions = function (arr) {
