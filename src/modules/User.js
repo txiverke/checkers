@@ -12,6 +12,7 @@ User.create = function(size, name, output) {
   this.bind();
   this.nextMove = [];
   this.piece = '';
+  this.clicked = false;
 };
 
 User.bind = function() {
@@ -22,7 +23,8 @@ User.bind = function() {
 };
 
 User.click = function(e) {
-  if (this.history.length % 2 === 0) {
+  if (state.history.length % 2 === 0 && !this.clicked) {
+    this.clicked = true;
     this.piece = e.target;
     const piecePosition = this.piece.dataset.index.split('');
     const num = [];
@@ -57,9 +59,6 @@ User.click = function(e) {
 User.showOptions = function() {
   const board = document.querySelector('.board');
   const moveFrom = this.piece.dataset.index;
-  const oldNextMoves = document.querySelectorAll('.piece-next');
-
-  if (oldNextMoves.length > 0) this.hideOptions(oldNextMoves);
 
   this.nextMove.forEach(item => {
     let next = createElement('div', {
@@ -80,25 +79,30 @@ User.move = function(e) {
   this.piece.style.left = state.coords[target.to].x + 'px';
   this.piece.style.top = state.coords[target.to].y + 'px';
   this.piece.dataset.index = target.to;
+  this.resetOptions(document.querySelectorAll('.piece-next'));
 
   state.update('user', target.from, target.to);
-
-  this.hideOptions(document.querySelectorAll('.piece-next'));
-  this.history.push({ user: true, from: target.from, to: target.to });
+  state.set('history', { user: true, from: target.from, to: target.to });
 
   setTimeout(() => {
-    if (this.history.length === 1) {
-      Machine.start.call(this);
+    if (state.history.length === 1) {
+      Machine.start();
     } else {
       Machine.move();
     }
   }, 500);
 };
 
-User.hideOptions = function(arr) {
+User.resetOptions = function(arr) {
   const parent = document.querySelector('.board');
-  arr.forEach(item => parent.removeChild(item));
+
+  arr.forEach(item => {
+    parent.removeChild(item);
+  });
+
   this.elem.user.forEach(item => item.html.classList.remove('active'));
+  this.clicked = false;
+  this.nextMove = [];
 };
 
 export default User;
