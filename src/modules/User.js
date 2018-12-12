@@ -39,14 +39,12 @@ User.click = function(e) {
   if (state.history.length % 2 === 0 && !this.clicked) {
     this.piece = e.target;
 
-    const piecePosition = this.piece.dataset.index.split('');
+    let [char, int] = this.piece.dataset.index.split('');
     const num = [];
-    const userCoords = state.get('user');
 
-    switch (piecePosition[1]) {
+    switch (int) {
       case '1':
         if (this.moveAvailable(2)) {
-          console.log('case 1');
           num.push(2);
         }
         break;
@@ -57,7 +55,7 @@ User.click = function(e) {
       case '5':
       case '6':
       case '7':
-        let int = Number(piecePosition[1]);
+        int = Number(int);
         if (this.moveAvailable(int - 1)) {
           num.push(int - 1);
         }
@@ -68,7 +66,6 @@ User.click = function(e) {
 
       case '8':
         if (this.moveAvailable(7)) {
-          console.log('case 7');
           num.push(7);
         }
         break;
@@ -78,12 +75,10 @@ User.click = function(e) {
     }
 
     if (num.length > 0) {
-      console.log(num);
       this.clicked = true;
 
       num.forEach(item => {
-        let temp =
-          board[board.findIndex(item => item === piecePosition[0]) + 1] + item;
+        let temp = board[board.findIndex(item => item === char) + 1] + item;
         this.nextMove.push(temp);
       });
 
@@ -130,11 +125,7 @@ User.move = function(e) {
   state.set('history', { user: true, from: target.from, to: target.to });
 
   setTimeout(() => {
-    if (state.history.length === 1) {
-      Machine.start();
-    } else {
-      Machine.move();
-    }
+    Machine.start();
   }, 500);
 };
 

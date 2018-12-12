@@ -1,5 +1,5 @@
 import Pieces from './Pieces';
-import { boardCoords } from '../utils/Constants';
+import { boardCoords as board } from '../utils/Constants';
 import { getRandom } from '../utils/Helpers';
 import state from './state';
 
@@ -9,7 +9,6 @@ Machine.create = function(size, name, output) {
   this.setup(size, name);
   this.build(output);
   this.bind();
-  this.piece = ''
 };
 
 Machine.bind = function() {
@@ -19,45 +18,68 @@ Machine.bind = function() {
 };
 
 Machine.start = function() {
-  if (state.history.length === 1) {
-    Machine.firstMove();
-  }
+  this.nextMoves = [];
+  this.piece = ''
+  this.moveAvailable();
 };
 
-Machine.firstMove = function() {
-  const values = [1, 3, 5, 7];
-  const r = getRandom(0, 4);
-  const random = values[r];
+Machine.moveAvailable = function() {
+  const machine = state.machine;
+  let elem = '';
+  let itemArr = [];
 
-  this.piece = document.querySelector(`[data-index=F${random}]`);
+  machine.forEach(item => {
+    itemArr = item.split('');
+    elem = board[board.findIndex(b => b === itemArr[0]) - 1];
+
+    if (itemArr[1] === '1') {
+      elem = elem + '2';
+    } else if (itemArr[1] === '8') {
+      elem = elem + '7';
+    } else {
+      elem = [elem + (Number(itemArr[1]) - 1), elem + (Number(itemArr[1]) + 1)];
+    }
+
+    if (Array.isArray(elem)) {
+      elem.forEach(n => {
+        if (!state.machine.includes(n) && !this.nextMoves.includes(n)) {
+          this.nextMoves.push({from: item, to: n});
+        }
+      });
+    } else if (!state.machine.includes(elem)) {
+      this.nextMoves.push({ from: item, to: elem});
+    }
+  });
+
+  this.setMove()
+  console.log('nextMoves -> ', this.nextMoves)
+};
+
+Machine.setMove = function() {
+  const r = getRandom(0, this.nextMoves.length);
+  const random = this.nextMoves[r];
+
+  console.log('selected -> ', random)
+  this.piece = document.querySelector(`[data-index=${random.from}]`);
+  this.moveTo = random.to
   this.move();
 };
 
 Machine.move = function() {
-  const currentPos = this.piece.dataset.index.split('');
-  const num = [];
-  const x = boardCoords;
 
-  switch (currentPos[1]) {
-    case '1':
-      num.push(2);
-      break;
-    case '8':
-      num.push(7);
-      break;
-    default:
-      num.push(Number(currentPos[1]) - 1, Number(currentPos[1]) + 1);
-  }
+  this.piece.style.top = `${state.coords[this.moveTo].y}px`;
+  this.piece.style.left = `${state.coords[this.moveTo].x}px`;
+  this.piece.dataset.index = this.moveTo
 
-  const randomNum = num[getRandom(0, num.length)];
-  const item = x[x.findIndex(item => item === currentPos[0]) - 1] + randomNum;
+  console.log('before update -> ', state.machine)
+  state.update('machine', this.piece.dataset.index, this.moveTo)
+  console.log('after update -> ', state.machine)
 
-  this.piece.style.top = `${state.coords[item].y}px`;
-  this.piece.style.left = `${state.coords[item].x}px`;
-
-  //state.update('machine', currentPos, item)
-  state.set('history', { user: false, from: this.piece.dataset.index, to: item });
-
+  state.set('history', {
+    user: false,
+    from: this.piece.dataset.index,
+    to: this.moveTo,
+  });
 };
 
 export default Machine;

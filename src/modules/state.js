@@ -3,11 +3,7 @@ const state = {
   machine: [],
   coords: {},
   history: [],
-  get(prop) {
-    if (prop) {
-      return this[prop];
-    }
-
+  get() {
     return {
       user: this.user,
       machine: this.machine,
@@ -21,6 +17,10 @@ const state = {
   update(prop, from, to) {
     const index = this[prop].findIndex(index => index === from);
     this[prop].splice(index, 1, to);
+  },
+  delete(prop, item) {
+    const index = this[prop].findIndex(index => index === from);
+    this[prop].splice(index, 1);
   },
 };
 
