@@ -19,7 +19,7 @@ Machine.bind = function() {
 
 Machine.start = function() {
   this.nextMoves = [];
-  this.piece = ''
+  this.piece = '';
   this.moveAvailable();
 };
 
@@ -43,41 +43,39 @@ Machine.moveAvailable = function() {
     if (Array.isArray(elem)) {
       elem.forEach(n => {
         if (!state.machine.includes(n) && !this.nextMoves.includes(n)) {
-          this.nextMoves.push({from: item, to: n});
+          this.nextMoves.push({ from: item, to: n });
         }
       });
     } else if (!state.machine.includes(elem)) {
-      this.nextMoves.push({ from: item, to: elem});
+      this.nextMoves.push({ from: item, to: elem });
     }
   });
 
-  this.setMove()
-  console.log('nextMoves -> ', this.nextMoves)
+  this.setMove();
 };
 
 Machine.setMove = function() {
   const r = getRandom(0, this.nextMoves.length);
   const random = this.nextMoves[r];
 
-  console.log('selected -> ', random)
   this.piece = document.querySelector(`[data-index=${random.from}]`);
-  this.moveTo = random.to
+  this.moveTo = random.to;
+
   this.move();
 };
 
 Machine.move = function() {
+  let moveFrom = this.piece.dataset.index;
 
   this.piece.style.top = `${state.coords[this.moveTo].y}px`;
   this.piece.style.left = `${state.coords[this.moveTo].x}px`;
-  this.piece.dataset.index = this.moveTo
+  this.piece.dataset.index = this.moveTo;
 
-  console.log('before update -> ', state.machine)
-  state.update('machine', this.piece.dataset.index, this.moveTo)
-  console.log('after update -> ', state.machine)
-
+  state.update('machine', moveFrom, this.moveTo);
+  
   state.set('history', {
     user: false,
-    from: this.piece.dataset.index,
+    from: moveFrom,
     to: this.moveTo,
   });
 };
