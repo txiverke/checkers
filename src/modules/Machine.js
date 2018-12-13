@@ -24,11 +24,10 @@ Machine.start = function() {
 };
 
 Machine.moveAvailable = function() {
-  const machine = state.machine;
   let elem = '';
   let itemArr = [];
 
-  machine.forEach(item => {
+  state.machine.forEach(item => {
     itemArr = item.split('');
     elem = board[board.findIndex(b => b === itemArr[0]) - 1];
 

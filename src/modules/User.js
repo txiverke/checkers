@@ -16,8 +16,6 @@ User.create = function(size, name, output) {
   this.setup(size, name);
   this.build(output);
   this.bind();
-  this.nextMove = [];
-  this.piece = '';
   this.clicked = false;
 };
 
@@ -38,68 +36,72 @@ User.bind = function() {
 User.click = function(e) {
   if (state.history.length % 2 === 0 && !this.clicked) {
     this.piece = e.target;
+    this.nextMoves = [];
+    this.nextEnemies = [];
 
-    let [char, int] = this.piece.dataset.index.split('');
-    const num = [];
+    this.movesAvailable();
+    this.enemiesAvailable();
 
-    switch (int) {
-      case '1':
-        if (this.moveAvailable(2)) {
-          num.push(2);
-        }
-        break;
-
-      case '2':
-      case '3':
-      case '4':
-      case '5':
-      case '6':
-      case '7':
-        int = Number(int);
-        if (this.moveAvailable(int - 1)) {
-          num.push(int - 1);
-        }
-        if (this.moveAvailable(int + 1)) {
-          num.push(int + 1);
-        }
-        break;
-
-      case '8':
-        if (this.moveAvailable(7)) {
-          num.push(7);
-        }
-        break;
-
-      default:
-        return false;
-    }
-
-    if (num.length > 0) {
+    if (this.nextMoves.length > 0) {
       this.clicked = true;
-
-      num.forEach(item => {
-        let temp = board[board.findIndex(item => item === char) + 1] + item;
-        this.nextMove.push(temp);
-      });
-
       e.target.classList.add('active');
-      this.showOptions();
+      this.showMoves();
     }
   }
 };
 
-User.moveAvailable = function(num) {
+User.movesAvailable = function() {
   let [char, int] = this.piece.dataset.index.split('');
-  char = board[board.findIndex(b => b === char) + 1];
+  let elem = board[board.findIndex(b => b === char) + 1];
+  int = Number(int);
 
-  return !state.user.includes(char + num);
+  if (int === 1) {
+    elem = elem + 2;
+  } else if (int === 8) {
+    elem = elem + 7;
+  } else {
+    elem = [elem + (int - 1), elem + (int + 1)];
+  }
+
+  if (Array.isArray(elem)) {
+    elem.forEach(n => {
+      if (!state.user.includes(n) && !this.nextMoves.includes(n)) {
+        this.nextMoves.push(n);
+      }
+    });
+  } else if (!state.user.includes(elem)) {
+    this.nextMoves.push(elem);
+  }
 };
 
-User.showOptions = function() {
+User.enemiesAvailable = function() {
+  let [char, int] = this.piece.dataset.index.split('');
+  let nextEnemies = [];
+  let nextChar, nextInt;
+
+  state.machine.forEach(item => {
+    if (this.nextMoves.includes(item)) {
+      nextEnemies = item.split('');
+      nextChar = board[board.findIndex(b => b === nextEnemies[0]) + 1];
+      nextInt = Number(nextEnemies[1]);
+
+      if (nextInt > int && !state.machine.includes(nextChar + (nextInt + 1))) {
+        this.nextEnemies.push(nextChar + (nextInt + 1));
+      } else if (
+        nextInt < int &&
+        !state.machine.includes(nextChar + (nextInt - 1))
+      ) {
+        this.nextEnemies.push(nextChar + (nextInt - 1));
+      }
+    }
+  });
+};
+
+User.showMoves = function() {
   const board = document.querySelector('.board');
   const moveFrom = this.piece.dataset.index;
 
-  this.nextMove.forEach(item => {
+  this.nextMoves.forEach(item => {
     let next = createElement('div', {
       classes: ['piece', 'piece-next'],
       data: { from: moveFrom, to: item },
@@ -107,10 +109,27 @@ User.showOptions = function() {
 
     next.style.left = state.coords[item].x + 'px';
     next.style.top = state.coords[item].y + 'px';
-    next.addEventListener('click', this.move.bind(this));
+    if (this.nextEnemies.length) {
+      next.addEventListener('click', this.kill.bind(this));
+    } else {
+      next.addEventListener('click', this.move.bind(this));
+    }
 
     board.appendChild(next);
   });
+};
+
+User.kill = function(e) {
+  const newPosition = this.nextEnemies[0];
+  const target = e.target.dataset.to;
+  this.piece.style.left = state.coords[newPosition].x + 'px';
+  this.piece.style.top = state.coords[newPosition].y + 'px';
+  this.piece.dataset.index = newPosition;
+
+  state.delete('machine', target);
+
+  this.remove('machine', target);
+  this.update(target, newPosition);
 };
 
 User.move = function(e) {
@@ -118,19 +137,25 @@ User.move = function(e) {
   this.piece.style.left = state.coords[target.to].x + 'px';
   this.piece.style.top = state.coords[target.to].y + 'px';
   this.piece.dataset.index = target.to;
+  this.update(target.from, target.to);
+};
 
-  this.resetUser(document.querySelectorAll('.piece-next'));
+User.update = function(from, to) {
+  this.resetUser();
 
-  state.update('user', target.from, target.to);
-  state.set('history', { user: true, from: target.from, to: target.to });
+  state.update('user', from, to);
+  state.set('history', { user: true, from, to });
 
   setTimeout(() => {
     Machine.start();
   }, 500);
 };
 
-User.resetUser = function(arr) {
-  arr.forEach(item => document.querySelector('.board').removeChild(item));
+User.resetUser = function() {
+  document
+    .querySelectorAll('.piece-next')
+    .forEach(item => document.querySelector('.board').removeChild(item));
+
   this.elem.user.forEach(item => item.html.classList.remove('active'));
   this.clicked = false;
   this.nextMove = [];

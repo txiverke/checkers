@@ -56,4 +56,10 @@ Pieces.build = function(output) {
   }
 };
 
+Pieces.remove = function(type, item) {
+  const parent = document.querySelector('.board');
+  const piece = document.querySelector(`.${type}[data-index="${item}"]`);
+  parent.removeChild(piece);
+};
+
 export default Pieces;
