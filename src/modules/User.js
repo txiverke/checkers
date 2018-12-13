@@ -1,5 +1,6 @@
 import Pieces from './Pieces';
 import Machine from './Machine';
+import Result from './Result'
 import { boardCoords as board } from '../utils/Constants';
 import { createElement } from '../utils/Helpers';
 import state from './state';
@@ -34,6 +35,7 @@ User.bind = function() {
  * @param {event} e
  */
 User.click = function(e) {
+  console.log(state.result)
   if (state.history.length % 2 === 0 && !this.clicked) {
     this.piece = e.target;
     this.nextMoves = [];
@@ -130,6 +132,8 @@ User.kill = function(e) {
 
   this.remove('machine', target);
   this.update(target, newPosition);
+
+  Result.increase('user')
 };
 
 User.move = function(e) {

@@ -1,32 +1,47 @@
-import Game from './Game'
+import Game from './Game';
+import state from './state';
 
-import { createElement } from '../utils/Helpers'
+import { createElement } from '../utils/Helpers';
 
-const Result = Object.create(Game)
+const Result = Object.create(Game);
 
-Result.setup = function (size) {
-  this.init(size)
+Result.setup = function(size) {
+  this.init(size);
+  this.elem = createElement('div', { classes: ['result'] });
 
-  this.elem = createElement('div', { 'classes': ['result'] })
-  this.resultBlack = createElement('div', { 'classes': ['result-box', 'black'] })
-  this.resultBlack.appendChild(createElement('div'))
-  
-  this.resultRed = createElement('div', { 'classes': ['result-box', 'red'] })
-  this.resultRed.appendChild(createElement('div'))
+  let resultMachine = createElement('div', {
+    classes: ['result-box', 'black'],
+  });
+  resultMachine.appendChild(createElement('div'));
 
-  this.elem.appendChild(this.resultBlack)
-  this.elem.appendChild(this.resultRed)
-}
+  let resultUser = createElement('div', { classes: ['result-box', 'red'] });
+  resultUser.appendChild(createElement('div'));
 
-Result.build = function (output) {
-  this.insert(output)
-  this.setDefault()
-}
+  this.elem.appendChild(resultMachine);
+  this.elem.appendChild(resultUser);
+};
+
+Result.build = function(output) {
+  this.insert(output);
+  this.setDefault();
+};
 
 Result.setDefault = function() {
-  this.result = { user: 0, computer: 0 }
-  this.resultBlack.querySelector('div').textContent = this.result.computer
-  this.resultRed.querySelector('div').textContent = this.result.user
-}
+  document.querySelector('.result-box.black').querySelector('div').textContent =
+    state.result.machine;
+  document.querySelector('.result-box.red').querySelector('div').textContent =
+    state.result.user;
+};
 
-export default Result
+Result.increase = function(type) {
+  state.result[type]++;
+
+  document
+    .querySelector('.result-box.black')
+    .querySelector('div').textContent = state.result.machine;
+  document
+    .querySelector('.result-box.red')
+    .querySelector('div').textContent = state.result.user;
+};
+
+export default Result;

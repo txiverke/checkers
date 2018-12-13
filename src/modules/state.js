@@ -3,6 +3,10 @@ const state = {
   machine: [],
   coords: {},
   history: [],
+  result: {
+    user: 0,
+    machine: 0,
+  },
   get() {
     return {
       user: this.user,
