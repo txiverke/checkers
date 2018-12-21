@@ -23,7 +23,7 @@ Pieces.setup = function(size, name) {
       square = count % 2 === 0 ? index + (index - 1) : index * 2;
       id = boardCoords[boardCoords.length - 1 - count] + square;
     }
-
+ 
     this.elem[name].push({
       html: createElement('div', {
         classes: ['piece', name],

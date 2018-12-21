@@ -1,6 +1,6 @@
 import Pieces from './Pieces';
 import Machine from './Machine';
-import Result from './Result'
+import Result from './Result';
 import { boardCoords as board } from '../utils/Constants';
 import { createElement } from '../utils/Helpers';
 import state from './state';
@@ -17,6 +17,7 @@ User.create = function(size, name, output) {
   this.setup(size, name);
   this.build(output);
   this.bind();
+  this.name = name;
   this.clicked = false;
 };
 
@@ -31,11 +32,12 @@ User.bind = function() {
 };
 
 /**
- * Creates an array with the potential moves
+ * Initialize Object properties &
+ * call methods to fill these properties
+ * with the next moves available
  * @param {event} e
  */
 User.click = function(e) {
-  console.log(state.result)
   if (state.history.length % 2 === 0 && !this.clicked) {
     this.piece = e.target;
     this.nextMoves = [];
@@ -77,7 +79,7 @@ User.movesAvailable = function() {
 };
 
 User.enemiesAvailable = function() {
-  let [char, int] = this.piece.dataset.index.split('');
+  const [char, int] = this.piece.dataset.index.split('');
   let nextEnemies = [];
   let nextChar, nextInt;
 
@@ -87,13 +89,50 @@ User.enemiesAvailable = function() {
       nextChar = board[board.findIndex(b => b === nextEnemies[0]) + 1];
       nextInt = Number(nextEnemies[1]);
 
-      if (nextInt > int && !state.machine.includes(nextChar + (nextInt + 1))) {
+      if (
+        /**
+         * If the nextMove goes out of the board
+         * it is removed from the nextMoves Array
+         */
+        nextInt === 8 ||
+        nextInt === 1 ||
+        (nextChar === undefined &&
+          state.machine.includes(nextChar + (nextInt + 1)))
+      ) {
+        this.nextMoves.splice(this.nextMoves.findIndex(el => el === item), 1);
+      } else if (
+        /**
+         *  Add move to nextEnemies to right cell
+         */
+        nextInt > int &&
+        nextInt < 8 &&
+        nextChar !== undefined &&
+        !state.machine.includes(nextChar + (nextInt + 1)) &&
+        !state.user.includes(nextChar + (nextInt + 1))
+      ) {
         this.nextEnemies.push(nextChar + (nextInt + 1));
       } else if (
+        /**
+         * Add move to nextEnemies to left cell
+         */
         nextInt < int &&
-        !state.machine.includes(nextChar + (nextInt - 1))
+        nextInt > 1 &&
+        nextChar !== undefined &&
+        !state.machine.includes(nextChar + (nextInt - 1)) &&
+        !state.user.includes(nextChar + (nextInt + 1))
       ) {
         this.nextEnemies.push(nextChar + (nextInt - 1));
+      } else if (
+        /**
+         * Removes item from nextMoves, it is not possible to kill
+         * bc there are machine pieces protecting
+         */
+        (nextInt > int && state.machine.includes(nextChar + (nextInt + 1))) ||
+        nextChar === undefined ||
+        ((nextInt < int && state.machine.includes(nextChar + (nextInt - 1))) ||
+          nextChar === undefined)
+      ) {
+        this.nextMoves.splice(this.nextMoves.findIndex(el => el === item), 1);
       }
     }
   });
@@ -111,6 +150,7 @@ User.showMoves = function() {
 
     next.style.left = state.coords[item].x + 'px';
     next.style.top = state.coords[item].y + 'px';
+
     if (this.nextEnemies.length) {
       next.addEventListener('click', this.kill.bind(this));
     } else {
@@ -123,6 +163,7 @@ User.showMoves = function() {
 
 User.kill = function(e) {
   const newPosition = this.nextEnemies[0];
+  const old = this.piece.dataset.index;
   const target = e.target.dataset.to;
   this.piece.style.left = state.coords[newPosition].x + 'px';
   this.piece.style.top = state.coords[newPosition].y + 'px';
@@ -131,9 +172,9 @@ User.kill = function(e) {
   state.delete('machine', target);
 
   this.remove('machine', target);
-  this.update(target, newPosition);
+  this.update(old, newPosition);
 
-  Result.increase('user')
+  Result.increase.call(this);
 };
 
 User.move = function(e) {

@@ -20,7 +20,7 @@ const state = {
   },
   update(prop, from, to) {
     const index = this[prop].findIndex(index => index === from);
-    this[prop].splice(index, 1, to);
+    this[prop].splice(index, 1, to).sort();
   },
   delete(prop, item) {
     const index = this[prop].findIndex(index => index === item);

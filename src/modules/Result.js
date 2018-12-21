@@ -33,15 +33,15 @@ Result.setDefault = function() {
     state.result.user;
 };
 
-Result.increase = function(type) {
-  state.result[type]++;
+Result.increase = function() {
+  const _this = this.name ? this.name : 'machine'
+  state.result[_this]++;
 
-  document
-    .querySelector('.result-box.black')
-    .querySelector('div').textContent = state.result.machine;
-  document
-    .querySelector('.result-box.red')
-    .querySelector('div').textContent = state.result.user;
+  document.querySelector('.result-box.black').querySelector('div').textContent =
+    state.result.machine;
+
+  document.querySelector('.result-box.red').querySelector('div').textContent =
+    state.result.user;
 };
 
 export default Result;
