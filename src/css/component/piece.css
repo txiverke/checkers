@@ -3,27 +3,30 @@
   top: 0;
   left: 0;
   border-radius: 50px;
-  background: black;
+  background: rgb(14, 13, 13);
+  border: 10px solid black;
   margin: 5px;
   box-sizing: border-box;
-  transition: left 0.25s, top 0.25s;
+  transition: left 300ms ease-in-out, top 300ms ease-in-out;
 }
 
 .piece.user {
   top: 438px;
   left: 438px;
-  background: red;
-  cursor: pointer;  
+  background: rgb(235, 7, 7);
+  border-color: red;
+  cursor: pointer;
 }
 
 .piece.red.active {
-  box-shadow: 0 0 0.5rem green;
+  box-shadow: 0 0 0.9rem green;
 }
 
 .piece-next {
   width: 52.5px;
   height: 52.5px;
   background: transparent;
-  box-shadow: 0 0 0.5rem green;  
-  cursor: pointer;  
+  box-shadow: 0 0 0.9rem green;
+  cursor: pointer;
+  border: none;
 }

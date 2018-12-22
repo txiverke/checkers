@@ -27,7 +27,7 @@ Pieces.setup = function(size, name) {
     this.elem[name].push({
       html: createElement('div', {
         classes: ['piece', name],
-        data: { index: id, role: name },
+        data: { index: id },
       }),
     });
 

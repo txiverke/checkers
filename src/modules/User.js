@@ -191,9 +191,11 @@ User.update = function(from, to) {
   state.update('user', from, to);
   state.set('history', { user: true, from, to });
 
-  setTimeout(() => {
+  if (state.machine.length > 0) {
     Machine.start();
-  }, 500);
+  } else {
+    console.log(`Hey ${this.name}, you won!!!!`);
+  }
 };
 
 User.resetUser = function() {

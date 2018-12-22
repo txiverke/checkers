@@ -1,5 +1,6 @@
 import Pieces from './Pieces';
 import Result from './Result';
+
 import { boardCoords as board } from '../utils/Constants';
 import { getRandom } from '../utils/Helpers';
 import state from './state';
@@ -22,14 +23,21 @@ Machine.start = function() {
   this.nextEnemies = [];
   this.nextMoves = [];
   this.piece = '';
-  this.moveAvailable();
+  this.cellsAvailable();
   this.usersAvailable();
-  this.setMove();
+
+  setTimeout(() => {
+    this.setMove();
+  }, 600);
 };
 
-Machine.moveAvailable = function() {
-  state.machine.forEach(item => {
-    let [char, int] = item.split('');
+/**
+ * Fill nextMoves prop with the moves
+ * available checking the empty cells
+ */
+Machine.cellsAvailable = function() {
+  state.machine.forEach(from => {
+    let [char, int] = from.split('');
     let elem = board[board.findIndex(b => b === char) - 1];
     int = Number(int);
 
@@ -42,13 +50,13 @@ Machine.moveAvailable = function() {
     }
 
     if (Array.isArray(elem)) {
-      elem.forEach(n => {
-        if (!state.machine.includes(n) && !this.nextMoves.includes(n)) {
-          this.nextMoves.push({ from: item, to: n });
+      elem.forEach(to => {
+        if (!state.machine.includes(to) && !this.nextMoves.includes(to)) {
+          this.nextMoves.push({ from, to });
         }
       });
     } else if (!state.machine.includes(elem)) {
-      this.nextMoves.push({ from: item, to: elem });
+      this.nextMoves.push({ from, to: elem });
     }
   });
 };
@@ -59,8 +67,6 @@ Machine.usersAvailable = function() {
 
   for (let i = 0, l = users.length; i < l; i++) {
     for (let j = 0, len = machine.length; j < len; j++) {
-      let nextEnemy = users[i];
-      let [char, int] = nextEnemy.split('');
       let nextMachine = machine[j];
       let [fromChar, fromInt] = nextMachine.from.split('');
       let [toChar, toInt] = nextMachine.to.split('');
@@ -93,8 +99,25 @@ Machine.usersAvailable = function() {
   }
 };
 
+Machine.usersNotAvailable = function() {
+  const users = state.user;
+  const machine = this.nextMoves;
+  const result = [...machine];
+
+  for (let j = 0, len = machine.length; j < len; j++) {
+    if (users.includes(machine[j].to)) {
+      result.splice(result.findIndex(el => el.to === machine[j].to), 1);
+    }
+  }
+
+  this.nextMoves = result;
+};
+
 Machine.setMove = function() {
   if (this.nextEnemies.length === 0) {
+    console.log('before ->', this.nextMoves);
+    this.usersNotAvailable();
+    console.log('after ->', this.nextMoves);
     const r = getRandom(0, this.nextMoves.length);
     const random = this.nextMoves[r];
     this.piece = document.querySelector(`.machine[data-index=${random.from}]`);
