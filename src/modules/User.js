@@ -109,7 +109,11 @@ User.enemiesAvailable = function() {
         !state.machine.includes(nextChar + (nextInt + 1)) &&
         !state.user.includes(nextChar + (nextInt + 1))
       ) {
-        this.nextEnemies.push(nextChar + (nextInt + 1));
+        this.nextEnemies.push({
+          from: char + int,
+          to: nextChar + (nextInt + 1),
+          remove: item,
+        });
       } else if (
         /**
          * Add move to nextEnemies to left cell
@@ -118,9 +122,13 @@ User.enemiesAvailable = function() {
         nextInt > 1 &&
         nextChar !== undefined &&
         !state.machine.includes(nextChar + (nextInt - 1)) &&
-        !state.user.includes(nextChar + (nextInt + 1))
+        !state.user.includes(nextChar + (nextInt - 1))
       ) {
-        this.nextEnemies.push(nextChar + (nextInt - 1));
+        this.nextEnemies.push({
+          from: char + int,
+          to: nextChar + (nextInt - 1),
+          remove: item,
+        });
       } else if (
         /**
          * Removes item from nextMoves, it is not possible to kill
@@ -140,6 +148,11 @@ User.enemiesAvailable = function() {
 User.showMoves = function() {
   const board = document.querySelector('.board');
   const moveFrom = this.piece.dataset.index;
+
+  if (this.nextEnemies.length) {
+    this.nextMoves = [];
+    this.nextMoves.push(this.nextEnemies[0].remove);
+  }
 
   this.nextMoves.forEach(item => {
     let next = createElement('div', {
@@ -161,21 +174,19 @@ User.showMoves = function() {
 };
 
 User.kill = function(e) {
-  const newPosition = this.nextEnemies[0];
-  const old = this.piece.dataset.index;
-  const target = e.target.dataset.to;
-  this.piece.style.left = state.coords[newPosition].x + 'px';
-  this.piece.style.top = state.coords[newPosition].y + 'px';
-  this.piece.dataset.index = newPosition;
+  const { from, to, remove } = this.nextEnemies[0];
+  this.piece.style.left = state.coords[to].x + 'px';
+  this.piece.style.top = state.coords[to].y + 'px';
+  this.piece.dataset.index = to;
 
-  state.delete('machine', target);
+  state.delete('machine', remove);
 
-  this.remove('machine', target);
-  this.update(old, newPosition);
+  this.remove('machine', remove);
+  this.update(from, to);
 
   Result.increase.call(this);
   this.move_sound.currentTime = 0;
-  this.move_sound.play()
+  this.move_sound.play();
 };
 
 User.move = function(e) {
@@ -206,7 +217,6 @@ User.resetUser = function() {
 
   this.elem.user.forEach(item => item.html.classList.remove('active'));
   this.clicked = false;
-  this.nextMove = [];
 };
 
 export default User;

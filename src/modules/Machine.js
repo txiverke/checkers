@@ -20,7 +20,6 @@ Machine.bind = function() {
 };
 
 Machine.start = function() {
-  console.log(this);
   this.nextEnemies = [];
   this.nextMoves = [];
   this.piece = '';
@@ -40,6 +39,7 @@ Machine.cellsAvailable = function() {
   state.machine.forEach(from => {
     let [char, int] = from.split('');
     let elem = board[board.findIndex(b => b === char) - 1];
+
     int = Number(int);
 
     if (int === 1) {
@@ -89,16 +89,16 @@ Machine.usersAvailable = function() {
       if (
         target &&
         users.includes(nextMachine.to) &&
-        !this.nextEnemies.includes(nextMachine.to) &&
         !users.includes(target) &&
         !machine.includes(target)
       ) {
+        if (this.nextEnemies.length && this.nextEnemies[0].to === target) break;
+
         this.nextEnemies.push({
           from: machine[j].from,
           to: target,
           remove: machine[j].to,
         });
-        break;
       }
     }
   }
@@ -108,7 +108,7 @@ Machine.usersAvailable = function() {
  * Remove form the nextMoves Array the user pieces
  * that cannot be killed
  */
-Machine.usersNotAvailable = function() {
+Machine.checkUserPieces = function() {
   const users = state.user;
   const machine = this.nextMoves;
   const result = [...machine];
@@ -122,9 +122,26 @@ Machine.usersNotAvailable = function() {
   this.nextMoves = result;
 };
 
+Machine.checkMachinePieces = function() {
+  const machine = state.machine;
+  const enemies = this.nextEnemies;
+  const result = [...enemies];
+
+  for (let j = 0, len = enemies.length; j < len; j++) {
+    if (machine.includes(enemies[j].to)) {
+      result.splice(result.findIndex(el => el.to === enemies[j].to), 1);
+    }
+  }
+
+  this.nextEnemies = result;
+};
+
 Machine.setMove = function() {
+  console.log('prev', this.nextEnemies);
+  if (this.nextEnemies.length) this.checkMachinePieces();
+  console.log('next', this.nextEnemies);
   if (this.nextEnemies.length === 0) {
-    this.usersNotAvailable();
+    this.checkUserPieces();
     const r = getRandom(0, this.nextMoves.length);
     const random = this.nextMoves[r];
     this.piece = document.querySelector(`.machine[data-index=${random.from}]`);
