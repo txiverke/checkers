@@ -1,7 +1,6 @@
 .board {
   position: relative;
-  border: 1px solid grey;
-  background: grey;
+  border: 0.5rem solid var(--darkerColor);
 }
 
 .board-cell {
@@ -11,7 +10,7 @@
   margin: 0;
   padding: 0;
   line-height: 0;
-  vertical-align:top;
+  vertical-align: top;
   background: #dddddd;
 }
 

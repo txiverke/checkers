@@ -20,6 +20,7 @@ Machine.bind = function() {
 };
 
 Machine.start = function() {
+  console.log(this);
   this.nextEnemies = [];
   this.nextMoves = [];
   this.piece = '';
@@ -28,7 +29,7 @@ Machine.start = function() {
 
   setTimeout(() => {
     this.setMove();
-  }, 600);
+  }, 1000);
 };
 
 /**
@@ -61,6 +62,10 @@ Machine.cellsAvailable = function() {
   });
 };
 
+/**
+ * Fill the nextEnemies array when there are
+ * user pieces that could be killed
+ */
 Machine.usersAvailable = function() {
   const users = state.user;
   const machine = this.nextMoves;
@@ -99,6 +104,10 @@ Machine.usersAvailable = function() {
   }
 };
 
+/**
+ * Remove form the nextMoves Array the user pieces
+ * that cannot be killed
+ */
 Machine.usersNotAvailable = function() {
   const users = state.user;
   const machine = this.nextMoves;
@@ -115,9 +124,7 @@ Machine.usersNotAvailable = function() {
 
 Machine.setMove = function() {
   if (this.nextEnemies.length === 0) {
-    console.log('before ->', this.nextMoves);
     this.usersNotAvailable();
-    console.log('after ->', this.nextMoves);
     const r = getRandom(0, this.nextMoves.length);
     const random = this.nextMoves[r];
     this.piece = document.querySelector(`.machine[data-index=${random.from}]`);
@@ -138,6 +145,7 @@ Machine.move = function() {
   this.piece.style.top = `${state.coords[this.moveTo].y}px`;
   this.piece.style.left = `${state.coords[this.moveTo].x}px`;
   this.piece.dataset.index = this.moveTo;
+
   this.update(moveFrom, this.moveTo);
 };
 
@@ -151,6 +159,9 @@ Machine.kill = function() {
   state.delete('user', this.removeUser);
   this.remove('user', this.removeUser);
   this.update(moveFrom, this.moveTo);
+
+  this.move_sound.currentTime = 0;
+  this.move_sound.play();
 
   Result.increase.call(this);
 };

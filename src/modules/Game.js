@@ -8,9 +8,8 @@ const Game = {
   init(size) {
     this.width = size.w || 0;
     this.height = size.h || 0;
+    this.sizeType = size.t || 'px';
     this.elem = {};
-    this.result = {};
-    this.history = [];
   },
   /**
    * Adds the html nodes to the DOM
@@ -18,19 +17,17 @@ const Game = {
    */
   insert(output) {
     switch (getType(this.elem)) {
-      case 'HTMLDivElement':
-        this.elem.style.width = `${this.width}px`;
-        this.elem.style.height = `${this.height}px`;
+      case 'HTMLElement':
+        this.elem.style.width = `${this.width}${this.sizeType}`;
+        this.elem.style.height = `${this.height}${this.sizeType}`;
         output.appendChild(this.elem);
         break;
 
       case 'Object':
-        const keys = Object.keys(this.elem);
-
-        keys.forEach(key => {
+        Object.keys(this.elem).forEach(key => {
           this.elem[key].forEach(item => {
-            item.html.style.width = `${this.width}px`;
-            item.html.style.height = `${this.height}px`;
+            item.html.style.width = `${this.width}${this.sizeType}`;
+            item.html.style.height = `${this.height}${this.sizeType}`;
             output.appendChild(item.html);
           });
         });

@@ -5,7 +5,7 @@ const webpackMerge = require('webpack-merge');
 const modeConfig = env => require(`./build-utils/webpack.${env}`)(env);
 
 module.exports = ({ mode = 'development' }) => {
-  console.log(mode)
+  console.log(mode);
   return webpackMerge(
     {
       entry: ['./src/index.js'],
@@ -26,6 +26,10 @@ module.exports = ({ mode = 'development' }) => {
             test: /\.(jpg|jpeg|png|ico|gif|ttf)$/,
             use: [{ loader: 'url-loader', options: { limit: 5000 } }],
           },
+          {
+            test: /\.mp3$/,
+            use: { loader: 'file-loader' },
+          },
         ],
       },
       plugins: [
@@ -41,5 +45,4 @@ module.exports = ({ mode = 'development' }) => {
     },
     modeConfig(mode),
   );
-}
-  
+};

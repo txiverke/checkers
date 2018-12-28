@@ -3,8 +3,7 @@
   top: 0;
   left: 0;
   border-radius: 50px;
-  background: rgb(14, 13, 13);
-  border: 10px solid black;
+  background: var(--secondColor);
   margin: 5px;
   box-sizing: border-box;
   transition: left 300ms ease-in-out, top 300ms ease-in-out;
@@ -13,20 +12,19 @@
 .piece.user {
   top: 438px;
   left: 438px;
-  background: rgb(235, 7, 7);
-  border-color: red;
+  background: var(--darkColor);
   cursor: pointer;
 }
 
-.piece.red.active {
-  box-shadow: 0 0 0.9rem green;
+.piece.user.active {
+  box-shadow: 0 0 0.9rem var(--lightColor);
 }
 
 .piece-next {
   width: 52.5px;
   height: 52.5px;
   background: transparent;
-  box-shadow: 0 0 0.9rem green;
+  box-shadow: 0 0 0.9rem var(--lightColor);
   cursor: pointer;
   border: none;
 }

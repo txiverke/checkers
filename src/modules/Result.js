@@ -7,14 +7,14 @@ const Result = Object.create(Game);
 
 Result.setup = function(size) {
   this.init(size);
-  this.elem = createElement('div', { classes: ['result'] });
+  this.elem = createElement('aside', { class: ['result'] });
 
   let resultMachine = createElement('div', {
-    classes: ['result-box', 'black'],
+    class: ['result-box', 'black'],
   });
   resultMachine.appendChild(createElement('div'));
 
-  let resultUser = createElement('div', { classes: ['result-box', 'red'] });
+  let resultUser = createElement('div', { class: ['result-box', 'red'] });
   resultUser.appendChild(createElement('div'));
 
   this.elem.appendChild(resultMachine);

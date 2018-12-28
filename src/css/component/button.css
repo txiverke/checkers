@@ -1,0 +1,20 @@
+.btn {
+  background: transparent;
+  color: var(--lightColor);
+  border: 1px solid var(--lightColor);
+  border-radius: 25px;
+  padding: 0.75rem 1.5rem;
+  transition: color 300ms ease-in-out, border 300ms ease-in-out;
+  cursor: pointer;
+}
+
+.btn:hover {
+  color: white;
+  border-color: white;
+}
+
+.btn:disabled {
+  color: #dddddd;
+  border-color: #dddddd;
+  cursor: default;
+}

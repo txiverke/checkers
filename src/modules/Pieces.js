@@ -6,57 +6,58 @@ const Pieces = Object.create(Game);
 
 Pieces.setup = function(size, name) {
   this.init(size);
-  this.elem = { [name]: [] };
+  this.name = name;
+  this.elem = { [this.name]: [] };
 
-  let count = 0;
+  const NUMBER_OF_PIECES = 12;
+  let i = 1;
+  let currentRow = 0;
   let index = 1;
-  let down = 2;
 
-  for (var i = 1; i <= 12; i++) {
-    let square = 0;
-    let id = 0;
+  while (i <= NUMBER_OF_PIECES) {
+    let pieceIndex = 0;
+    let pieceName = null;
 
-    if (name === 'user') {
-      square = count % 2 === 0 ? index * 2 : index + (index - 1);
-      id = boardCoords[down] + square;
+    if (this.name === 'user') {
+      pieceIndex = currentRow % 2 === 0 ? index * 2 : index + (index - 1);
+      pieceName = boardCoords[2 - currentRow] + pieceIndex;
     } else {
-      square = count % 2 === 0 ? index + (index - 1) : index * 2;
-      id = boardCoords[boardCoords.length - 1 - count] + square;
+      pieceIndex = currentRow % 2 === 0 ? index + (index - 1) : index * 2;
+      pieceName = boardCoords[boardCoords.length - 1 - currentRow] + pieceIndex;
     }
- 
-    this.elem[name].push({
+
+    this.elem[this.name].push({
       html: createElement('div', {
-        classes: ['piece', name],
-        data: { index: id },
+        class: ['piece', this.name],
+        data: { index: pieceName, king: false },
       }),
     });
 
-    if (i % 4 === 0) {
-      count++;
+    if (this.elem[this.name].length % 4 === 0) {
+      currentRow++;
       index = 0;
-      if (name === 'user') down--;
     }
 
     index++;
+    i++;
   }
 };
 
 Pieces.build = function(output) {
   this.insert(output);
 
-  const keys = Object.keys(this.elem);
+  const key = Object.keys(this.elem)[0];
 
-  for (var i = 0; i < this.elem[keys[0]].length; i++) {
-    let item = this.elem[keys[0]][i].html;
-    let index = item.dataset.index;
-    let target = document.getElementById(index);
-
-    item.style.left = target.offsetLeft + 'px';
-    item.style.top = target.offsetTop + 'px';
-  }
+  this.elem[key].forEach(key => {
+    let piece = key.html;
+    let boardPosition = document.getElementById(piece.dataset.index);
+    piece.style.left = `${boardPosition.offsetLeft}px`;
+    piece.style.top = `${boardPosition.offsetTop}px`;
+  });
 };
 
 Pieces.remove = function(type, item) {
+  this.move_sound = document.getElementById('sound_move');
   const parent = document.querySelector('.board');
   const piece = document.querySelector(`.${type}[data-index="${item}"]`);
   parent.removeChild(piece);

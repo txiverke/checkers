@@ -1,4 +1,5 @@
 const state = {
+  username: '',
   user: [],
   machine: [],
   coords: {},
@@ -25,6 +26,14 @@ const state = {
   delete(prop, item) {
     const index = this[prop].findIndex(index => index === item);
     this[prop].splice(index, 1);
+  },
+  reset() {
+    this.machine = [];
+    this.user = [];
+    this.history = [];
+    this.username = '';
+    this.result.user = 0;
+    this.result.machine = 0;
   },
 };
 

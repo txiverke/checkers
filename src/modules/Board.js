@@ -8,7 +8,7 @@ const Board = Object.create(Game);
 Board.setup = function(size, coords) {
   this.init(size);
   this.board = [];
-  this.elem = createElement('div', { classes: ['board'] });
+  this.elem = createElement('article', { class: ['board'] });
 
   for (var i = 0, l = coords.length; i < l; i++) {
     for (var j = 1; j <= l; j++) {

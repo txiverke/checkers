@@ -17,7 +17,6 @@ User.create = function(size, name, output) {
   this.setup(size, name);
   this.build(output);
   this.bind();
-  this.name = name;
   this.clicked = false;
 };
 
@@ -144,7 +143,7 @@ User.showMoves = function() {
 
   this.nextMoves.forEach(item => {
     let next = createElement('div', {
-      classes: ['piece', 'piece-next'],
+      class: ['piece', 'piece-next'],
       data: { from: moveFrom, to: item },
     });
 
@@ -175,6 +174,8 @@ User.kill = function(e) {
   this.update(old, newPosition);
 
   Result.increase.call(this);
+  this.move_sound.currentTime = 0;
+  this.move_sound.play()
 };
 
 User.move = function(e) {

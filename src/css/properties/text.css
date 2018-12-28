@@ -1,0 +1,10 @@
+.tit,
+.subtit {
+  color: white;
+  text-align: center;
+}
+
+.tit {
+  border-bottom: 1px dotted;
+  padding: 1rem;
+}

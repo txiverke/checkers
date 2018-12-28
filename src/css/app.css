@@ -1,5 +1,9 @@
+@import '_variables.css';
 @import 'layout/body.css';
 @import 'component/board.css';
+@import 'component/button.css';
+@import 'component/form.css';
 @import 'component/piece.css';
 @import 'component/result.css';
 @import 'properties/box-model.css';
+@import 'properties/text.css';
