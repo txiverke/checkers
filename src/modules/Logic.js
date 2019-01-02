@@ -7,14 +7,15 @@ import { DIC } from '../utils/Constants';
 import move from '../assets/sounds/kill.mp3';
 import state from './state';
 
-const Logic = Object.create(Game);
+Object.setPrototypeOf(Logic.prototype, Game.prototype);
+//Logic.prototype = Object.create(Game.prototype)
 
-Logic.setup = function(size) {
-  this.init(size);
+function Logic(size) {
+  Game.call(this, size);
   this.render();
-};
+}
 
-Logic.render = function() {
+Logic.prototype.render = function() {
   this.elem = CE('header', { class: ['header'] });
 
   const button = CE(
@@ -49,7 +50,7 @@ Logic.render = function() {
   htmlElements.forEach(elem => this.elem.appendChild(elem));
 };
 
-Logic.build = function(output) {
+Logic.prototype.build = function(output) {
   this.insert(output);
   this.btn = this.elem.querySelector('.btn');
   this.input = this.elem.querySelector('.input');
@@ -68,7 +69,7 @@ Logic.build = function(output) {
   });
 };
 
-Logic.click = function() {
+Logic.prototype.click = function() {
   if (!Number(this.btn.dataset.start)) {
     this.start();
   } else {
@@ -76,7 +77,7 @@ Logic.click = function() {
   }
 };
 
-Logic.start = function() {
+Logic.prototype.start = function() {
   this.btn.dataset.start = 1;
   this.btn.textContent = 'Reset';
   this.input.value = '';
@@ -86,14 +87,14 @@ Logic.start = function() {
 
   const boardHtml = document.querySelector('.board');
 
-  const user = Object.create(User);
-  user.create({ w: 52.5, h: 52.5 }, 'user', boardHtml);
+  const user = new User({ w: 52.5, h: 52.5 });
+  user.build(boardHtml)
 
-  const machine = Object.create(Machine);
-  machine.create({ w: 52.5, h: 52.5 }, 'machine', boardHtml);
+  const machine = new Machine({ w: 52.5, h: 52.5 });
+  machine.build(boardHtml);
 };
 
-Logic.reset = function() {
+Logic.prototype.reset = function() {
   const board = document.querySelector('.board');
   const pieces = document.querySelectorAll('.piece');
   pieces.forEach(piece => board.removeChild(piece));

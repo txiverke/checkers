@@ -2,10 +2,10 @@ import Game from './Game';
 import { boardCoords } from '../utils/Constants';
 import { createElement } from '../utils/Helpers';
 
-const Pieces = Object.create(Game);
+Pieces.prototype = Object.create(Game.prototype);
 
-Pieces.setup = function(size, name) {
-  this.init(size);
+function Pieces(size, name) {
+  Game.call(this, size);
   this.name = name;
   this.elem = { [this.name]: [] };
 
@@ -41,9 +41,9 @@ Pieces.setup = function(size, name) {
     index++;
     i++;
   }
-};
+}
 
-Pieces.build = function(output) {
+Pieces.prototype.build = function(output) {
   this.insert(output);
 
   const key = Object.keys(this.elem)[0];
@@ -56,7 +56,7 @@ Pieces.build = function(output) {
   });
 };
 
-Pieces.remove = function(type, item) {
+Pieces.prototype.remove = function(type, item) {
   this.move_sound = document.getElementById('sound_move');
   const parent = document.querySelector('.board');
   const piece = document.querySelector(`.${type}[data-index="${item}"]`);

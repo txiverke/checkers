@@ -3,10 +3,10 @@ import state from './state';
 
 import { createElement } from '../utils/Helpers';
 
-const Result = Object.create(Game);
+Object.setPrototypeOf(Result.prototype, Game.prototype);
 
-Result.setup = function(size) {
-  this.init(size);
+function Result(size) {
+  Game.call(this, size);
   this.elem = createElement('aside', { class: ['result'] });
 
   let resultMachine = createElement('div', {
@@ -19,29 +19,26 @@ Result.setup = function(size) {
 
   this.elem.appendChild(resultMachine);
   this.elem.appendChild(resultUser);
-};
+}
 
-Result.build = function(output) {
+Result.prototype.build = function(output) {
   this.insert(output);
   this.setDefault();
+
+  state.registerListener('result', () => {
+    this.update();
+  });
 };
 
-Result.setDefault = function() {
-  document.querySelector('.result-box.black').querySelector('div').textContent =
-    state.result.machine;
-  document.querySelector('.result-box.red').querySelector('div').textContent =
-    state.result.user;
+Result.prototype.setDefault = function() {
+  document.querySelector('.result-box.black div').textContent = 0;
+  document.querySelector('.result-box.red div').textContent = 0;
 };
 
-Result.increase = function() {
-  const _this = this.name ? this.name : 'machine'
-  state.result[_this]++;
-
-  document.querySelector('.result-box.black').querySelector('div').textContent =
+Result.prototype.update = function() {
+  document.querySelector('.result-box.black div').textContent =
     state.result.machine;
-
-  document.querySelector('.result-box.red').querySelector('div').textContent =
-    state.result.user;
+  document.querySelector('.result-box.red div').textContent = state.result.user;
 };
 
 export default Result;

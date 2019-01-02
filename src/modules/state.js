@@ -18,6 +18,10 @@ const state = {
   },
   set(prop, item) {
     this[prop].push(item);
+
+    if (prop === 'history') {
+      this.historyListener();
+    }
   },
   update(prop, from, to) {
     const index = this[prop].findIndex(index => index === from);
@@ -34,6 +38,13 @@ const state = {
     this.username = '';
     this.result.user = 0;
     this.result.machine = 0;
+  },
+  increase(obj) {
+    this.result[obj.name]++;
+    this.resultListener();
+  },
+  registerListener(name, listener) {
+    this[`${name}Listener`] = listener;
   },
 };
 

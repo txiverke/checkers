@@ -1,12 +1,17 @@
 import Game from './Game';
 import { createElement } from '../utils/Helpers';
-import state from './state'
+import state from './state';
 
+import { boardCoords as coords } from '../utils/Constants';
 
-const Board = Object.create(Game);
+Board.prototype = Object.create(Game.prototype);
 
-Board.setup = function(size, coords) {
-  this.init(size);
+function Board(size) {
+  Game.call(this, size);
+  this.setup();
+}
+
+Board.prototype.setup = function() {
   this.board = [];
   this.elem = createElement('article', { class: ['board'] });
 
@@ -24,15 +29,16 @@ Board.setup = function(size, coords) {
     .join('');
 };
 
-Board.build = function(output) {
+Board.prototype.build = function(output) {
   this.insert(output);
+  this.getCoords();
 };
 
-Board.getCoords = function() {
+Board.prototype.getCoords = function() {
   const cells = document.querySelectorAll('.board-cell');
 
   cells.forEach(cell => {
-    state.coords[cell.id] = { x: cell.offsetLeft, y: cell.offsetTop }
+    state.coords[cell.id] = { x: cell.offsetLeft, y: cell.offsetTop };
   });
 };
 

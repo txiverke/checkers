@@ -1,25 +1,29 @@
 import Pieces from './Pieces';
-import Result from './Result';
 
 import { boardCoords as board } from '../utils/Constants';
 import { getRandom } from '../utils/Helpers';
 import state from './state';
 
-const Machine = Object.create(Pieces);
+Object.setPrototypeOf(Machine.prototype, Pieces.prototype);
 
-Machine.create = function(size, name, output) {
-  this.setup(size, name);
-  this.build(output);
+function Machine(size) {
+  Pieces.call(this, size, 'machine');
   this.bind();
-};
+}
 
-Machine.bind = function() {
+Machine.prototype.bind = function() {
   this.elem.machine.forEach(item =>
     state.set('machine', item.html.dataset.index),
   );
+
+  state.registerListener('history', () => {
+    if (state.history.length % 2 !== 0) {
+      this.start();
+    }
+  });
 };
 
-Machine.start = function() {
+Machine.prototype.start = function() {
   this.nextEnemies = [];
   this.nextMoves = [];
   this.piece = '';
@@ -35,7 +39,7 @@ Machine.start = function() {
  * Fill nextMoves prop with the moves
  * available checking the empty cells
  */
-Machine.cellsAvailable = function() {
+Machine.prototype.cellsAvailable = function() {
   state.machine.forEach(from => {
     let [char, int] = from.split('');
     let elem = board[board.findIndex(b => b === char) - 1];
@@ -66,7 +70,7 @@ Machine.cellsAvailable = function() {
  * Fill the nextEnemies array when there are
  * user pieces that could be killed
  */
-Machine.usersAvailable = function() {
+Machine.prototype.usersAvailable = function() {
   const users = state.user;
   const machine = this.nextMoves;
 
@@ -108,7 +112,7 @@ Machine.usersAvailable = function() {
  * Remove form the nextMoves Array the user pieces
  * that cannot be killed
  */
-Machine.checkUserPieces = function() {
+Machine.prototype.checkUserPieces = function() {
   const users = state.user;
   const machine = this.nextMoves;
   const result = [...machine];
@@ -122,7 +126,7 @@ Machine.checkUserPieces = function() {
   this.nextMoves = result;
 };
 
-Machine.checkMachinePieces = function() {
+Machine.prototype.checkMachinePieces = function() {
   const machine = state.machine;
   const enemies = this.nextEnemies;
   const result = [...enemies];
@@ -136,7 +140,7 @@ Machine.checkMachinePieces = function() {
   this.nextEnemies = result;
 };
 
-Machine.setMove = function() {
+Machine.prototype.setMove = function() {
   console.log('prev', this.nextEnemies);
   if (this.nextEnemies.length) this.checkMachinePieces();
   console.log('next', this.nextEnemies);
@@ -156,7 +160,7 @@ Machine.setMove = function() {
   }
 };
 
-Machine.move = function() {
+Machine.prototype.move = function() {
   let moveFrom = this.piece.dataset.index;
 
   this.piece.style.top = `${state.coords[this.moveTo].y}px`;
@@ -166,7 +170,7 @@ Machine.move = function() {
   this.update(moveFrom, this.moveTo);
 };
 
-Machine.kill = function() {
+Machine.prototype.kill = function() {
   let moveFrom = this.piece.dataset.index;
 
   this.piece.style.top = `${state.coords[this.moveTo].y}px`;
@@ -180,10 +184,10 @@ Machine.kill = function() {
   this.move_sound.currentTime = 0;
   this.move_sound.play();
 
-  Result.increase.call(this);
+  state.increase(this)
 };
 
-Machine.update = function(from, to) {
+Machine.prototype.update = function(from, to) {
   state.update('machine', from, to);
 
   state.set('history', {

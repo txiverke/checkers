@@ -1,42 +1,26 @@
 import Pieces from './Pieces';
-import Machine from './Machine';
 import Result from './Result';
 import { boardCoords as board } from '../utils/Constants';
 import { createElement } from '../utils/Helpers';
 import state from './state';
 
-const User = Object.create(Pieces);
+User.prototype = Object.create(Pieces.prototype);
 
-/**
- * Initializes User object properties
- * @param {object} size
- * @param {string} name
- * @param {HTMLElement} output
- */
-User.create = function(size, name, output) {
-  this.setup(size, name);
-  this.build(output);
+function User(size) {
+  Pieces.call(this, size, 'user');
+
   this.bind();
   this.clicked = false;
-};
+}
 
-/**
- * Binds User pieces to click event
- */
-User.bind = function() {
+User.prototype.bind = function() {
   this.elem.user.forEach(item => {
     state.set('user', item.html.dataset.index);
     item.html.addEventListener('click', this.click.bind(this));
   });
 };
 
-/**
- * Initialize Object properties &
- * call methods to fill these properties
- * with the next moves available
- * @param {event} e
- */
-User.click = function(e) {
+User.prototype.click = function(e) {
   if (state.history.length % 2 === 0 && !this.clicked) {
     this.piece = e.target;
     this.nextMoves = [];
@@ -53,7 +37,7 @@ User.click = function(e) {
   }
 };
 
-User.movesAvailable = function() {
+User.prototype.movesAvailable = function() {
   let [char, int] = this.piece.dataset.index.split('');
   let elem = board[board.findIndex(b => b === char) + 1];
   int = Number(int);
@@ -77,7 +61,7 @@ User.movesAvailable = function() {
   }
 };
 
-User.enemiesAvailable = function() {
+User.prototype.enemiesAvailable = function() {
   const [char, int] = this.piece.dataset.index.split('');
   let nextEnemies = [];
   let nextChar, nextInt;
@@ -145,7 +129,7 @@ User.enemiesAvailable = function() {
   });
 };
 
-User.showMoves = function() {
+User.prototype.showMoves = function() {
   const board = document.querySelector('.board');
   const moveFrom = this.piece.dataset.index;
 
@@ -173,7 +157,7 @@ User.showMoves = function() {
   });
 };
 
-User.kill = function(e) {
+User.prototype.kill = function(e) {
   const { from, to, remove } = this.nextEnemies[0];
   this.piece.style.left = state.coords[to].x + 'px';
   this.piece.style.top = state.coords[to].y + 'px';
@@ -184,12 +168,12 @@ User.kill = function(e) {
   this.remove('machine', remove);
   this.update(from, to);
 
-  Result.increase.call(this);
+  state.increase(this);
   this.move_sound.currentTime = 0;
   this.move_sound.play();
 };
 
-User.move = function(e) {
+User.prototype.move = function(e) {
   const target = e.target.dataset;
   this.piece.style.left = state.coords[target.to].x + 'px';
   this.piece.style.top = state.coords[target.to].y + 'px';
@@ -197,20 +181,18 @@ User.move = function(e) {
   this.update(target.from, target.to);
 };
 
-User.update = function(from, to) {
+User.prototype.update = function(from, to) {
   this.resetUser();
 
   state.update('user', from, to);
   state.set('history', { user: true, from, to });
 
-  if (state.machine.length > 0) {
-    Machine.start();
-  } else {
+  if (state.machine.length === 0) {
     console.log(`Hey ${this.name}, you won!!!!`);
   }
 };
 
-User.resetUser = function() {
+User.prototype.resetUser = function() {
   document
     .querySelectorAll('.piece-next')
     .forEach(item => document.querySelector('.board').removeChild(item));
